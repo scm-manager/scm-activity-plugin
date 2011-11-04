@@ -98,8 +98,8 @@ public class ActivityManager extends CacheClearHook
                          RepositoryManager repositoryManager,
                          Provider<WebSecurityContext> securityContextProvider)
   {
-    this.activityCache = cacheManager.getCache(String.class,
-            ChangesetPagingResult.class, CACHE_NAME);
+    this.activityCache = cacheManager.getCache(String.class, Activities.class,
+            CACHE_NAME);
     this.changesetViewerUtil = changesetViewerUtil;
     this.repositoryManager = repositoryManager;
     this.securityContextProvider = securityContextProvider;
@@ -131,21 +131,21 @@ public class ActivityManager extends CacheClearHook
    *
    * @return
    */
-  public ChangesetPagingResult getLatestActivity(int pageSize)
+  public Activities getLatestActivity(int pageSize)
   {
     User user = SecurityUtil.getCurrentUser(securityContextProvider);
 
     AssertUtil.assertIsNotNull(user);
 
-    ChangesetPagingResult paging = activityCache.get(user.getName());
+    Activities activities = activityCache.get(user.getName());
 
-    if (paging == null)
+    if (activities == null)
     {
-      paging = getChangesetPagingResult(pageSize);
-      activityCache.put(user.getName(), paging);
+      activities = getActivities(pageSize);
+      activityCache.put(user.getName(), activities);
     }
 
-    return paging;
+    return activities;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -154,11 +154,12 @@ public class ActivityManager extends CacheClearHook
    * Method description
    *
    *
-   * @param changesets
+   *
+   * @param activityList
    * @param r
    * @param pageSize
    */
-  private void appendChangesets(List<Changeset> changesets, Repository r,
+  private void appendActivities(List<Activity> activityList, Repository r,
                                 int pageSize)
   {
     try
@@ -172,7 +173,10 @@ public class ActivityManager extends CacheClearHook
 
         if (changesetList != null)
         {
-          changesets.addAll(changesetList);
+          for (Changeset c : changesetList)
+          {
+            activityList.add(new Activity(r, c));
+          }
         }
       }
     }
@@ -193,30 +197,30 @@ public class ActivityManager extends CacheClearHook
    *
    * @return
    */
-  private ChangesetPagingResult getChangesetPagingResult(int pageSize)
+  private Activities getActivities(int pageSize)
   {
-    List<Changeset> changesets = new ArrayList<Changeset>();
+    List<Activity> activityList = new ArrayList<Activity>();
     Collection<Repository> repositories = repositoryManager.getAll();
 
     for (Repository r : repositories)
     {
-      appendChangesets(changesets, r, pageSize);
+      appendActivities(activityList, r, pageSize);
     }
 
-    Collections.sort(changesets, ChangesetComparator.INSTANCE);
+    Collections.sort(activityList, ActivityComparator.INSTANCE);
 
-    if (changesets.size() > pageSize)
+    if (activityList.size() > pageSize)
     {
-      changesets = changesets.subList(0, pageSize);
+      activityList = activityList.subList(0, pageSize);
     }
 
-    return new ChangesetPagingResult(changesets.size(), changesets);
+    return new Activities(activityList);
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private Cache<String, ChangesetPagingResult> activityCache;
+  private Cache<String, Activities> activityCache;
 
   /** Field description */
   private ChangesetViewerUtil changesetViewerUtil;

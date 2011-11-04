@@ -36,35 +36,109 @@ package sonia.scm.activity;
 //~--- non-JDK imports --------------------------------------------------------
 
 import sonia.scm.repository.Changeset;
+import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Comparator;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-public class ChangesetComparator implements Comparator<Changeset>
+@XmlRootElement(name = "activity")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Activity
 {
 
-  /** Field description */
-  public static final ChangesetComparator INSTANCE = new ChangesetComparator();
+  /**
+   * Constructs ...
+   *
+   */
+  public Activity() {}
 
-  //~--- methods --------------------------------------------------------------
+  /**
+   * Constructs ...
+   *
+   *
+   * @param repository
+   * @param changeset
+   */
+  public Activity(Repository repository, Changeset changeset)
+  {
+    this.repository = repository.getId();
+    this.changeset = changeset;
+  }
+
+  /**
+   * Constructs ...
+   *
+   *
+   *
+   * @param repositoryId
+   * @param changeset
+   */
+  public Activity(String repositoryId, Changeset changeset)
+  {
+    this.repository = repositoryId;
+    this.changeset = changeset;
+  }
+
+  //~--- get methods ----------------------------------------------------------
 
   /**
    * Method description
    *
    *
-   * @param c1
-   * @param c2
+   * @return
+   */
+  public Changeset getChangeset()
+  {
+    return changeset;
+  }
+
+  /**
+   * Method description
+   *
    *
    * @return
    */
-  @Override
-  public int compare(Changeset c1, Changeset c2)
+  public String getRepository()
   {
-    return c2.getDate().intValue() - c1.getDate().intValue();
+    return repository;
   }
+
+  //~--- set methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param changeset
+   */
+  public void setChangeset(Changeset changeset)
+  {
+    this.changeset = changeset;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   */
+  public void setRepository(String repository)
+  {
+    this.repository = repository;
+  }
+
+  //~--- fields ---------------------------------------------------------------
+
+  /** Field description */
+  private Changeset changeset;
+
+  /** Field description */
+  private String repository;
 }

@@ -33,59 +33,36 @@
 
 package sonia.scm.activity;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import com.google.inject.Inject;
-
 //~--- JDK imports ------------------------------------------------------------
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.Comparator;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-@Path("activity")
-public class ActivityResource
+public class ActivityComparator implements Comparator<Activity>
 {
 
   /** Field description */
-  public static final int PAGE_SIZE = 25;
+  public static final ActivityComparator INSTANCE = new ActivityComparator();
 
-  //~--- constructors ---------------------------------------------------------
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param activityManager
-   */
-  @Inject
-  public ActivityResource(ActivityManager activityManager)
-  {
-    this.activityManager = activityManager;
-  }
-
-  //~--- get methods ----------------------------------------------------------
+  //~--- methods --------------------------------------------------------------
 
   /**
    * Method description
    *
    *
+   *
+   * @param a1
+   * @param a2
+   *
    * @return
    */
-  @GET
-  @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-  public Activities getLatestActivity()
+  @Override
+  public int compare(Activity a1, Activity a2)
   {
-    return activityManager.getLatestActivity(PAGE_SIZE);
+    return a2.getChangeset().getDate().intValue()
+           - a1.getChangeset().getDate().intValue();
   }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** Field description */
-  private ActivityManager activityManager;
 }

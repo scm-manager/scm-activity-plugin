@@ -33,40 +33,40 @@
 
 package sonia.scm.activity;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import com.google.inject.Inject;
-
 //~--- JDK imports ------------------------------------------------------------
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Sebastian Sdorra
  */
-@Path("activity")
-public class ActivityResource
+@XmlRootElement(name = "activities")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Activities
 {
 
-  /** Field description */
-  public static final int PAGE_SIZE = 25;
-
-  //~--- constructors ---------------------------------------------------------
+  /**
+   * Constructs ...
+   *
+   */
+  public Activities() {}
 
   /**
    * Constructs ...
    *
    *
-   * @param activityManager
+   * @param activities
    */
-  @Inject
-  public ActivityResource(ActivityManager activityManager)
+  public Activities(List<Activity> activities)
   {
-    this.activityManager = activityManager;
+    this.activities = activities;
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -77,15 +77,28 @@ public class ActivityResource
    *
    * @return
    */
-  @GET
-  @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-  public Activities getLatestActivity()
+  public List<Activity> getActivities()
   {
-    return activityManager.getLatestActivity(PAGE_SIZE);
+    return activities;
+  }
+
+  //~--- set methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param activities
+   */
+  public void setActivities(List<Activity> activities)
+  {
+    this.activities = activities;
   }
 
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private ActivityManager activityManager;
+  @XmlElement(name = "activitiy")
+  @XmlElementWrapper(name = "activities")
+  private List<Activity> activities;
 }
