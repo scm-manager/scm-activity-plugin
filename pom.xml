@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>scm-plugins</artifactId>
+    <groupId>sonia.scm.plugins</groupId>
+    <version>1.8</version>
+  </parent>
+
+  <groupId>sonia.scm.plugins</groupId>
+  <artifactId>scm-activity-plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>scm-activity-plugin</name>
+  <url>https://bitbucket.org/sdorra/scm-manager</url>
+  <description>Shows the latest activity from your repositories.</description>
+  
+  <scm>
+    <connection>scm:hg:https://bitbucket.org/sdorra/scm-activity-plugin</connection>
+    <developerConnection>scm:hg:https://bitbucket.org/sdorra/scm-activity-plugin</developerConnection>
+    <url>https://bitbucket.org/sdorra/scm-activity-plugin</url>
+  </scm>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>${servlet.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jvnet.libpam4j</groupId>
+      <artifactId>libpam4j</artifactId>
+      <version>1.4</version>
+    </dependency>
+
+  </dependencies>
+  
+  <repositories>
+    
+    <repository>
+      <id>maven.scm-manager.org</id>
+      <name>scm-manager release repository</name>
+      <url>http://maven.scm-manager.org/nexus/content/groups/public</url>
+    </repository>
+  
+  </repositories>
+
+</project>
