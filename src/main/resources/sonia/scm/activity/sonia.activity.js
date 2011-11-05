@@ -36,30 +36,15 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
   repositoryTpl: '{0} - {1}',
 
   initComponent: function(){
+    this.idsTemplate = this.idsTemplate.replace(/rel="{0}"/g, 'rel="{1}|{2}|{3}|{0}"');
+    
     Sonia.activity.ActivityGrid.superclass.initComponent.apply(this, arguments);
     this.addColumn('repository-id', {
       id: 'repository-id',
       dataIndex: 'repository-id',
       width: 0,
       hidden: true,
-      renderer: function(value, metaData, record){
-        var type = repositoryTypeStore.queryBy(function(rec){
-          return rec.get('name') == record.get('repository-type');
-        }).itemAt(0);
-        
-        var typeName = null;
-        if ( type ){
-          typeName = type.get('displayName');
-        } else {
-          typeName = record.get('repository-type');
-        }
-        
-        return String.format(
-          this.repositoryTpl, 
-          record.get('repository-name'),
-          typeName
-        );
-      },
+      renderer: this.renderRepositoryColumn,
       scope: this
     });
     this.addColumn('date', {
@@ -67,6 +52,93 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
       dataIndex: 'date',
       width: 0,
       hidden: true 
+    });
+  },
+  
+  renderIds: function(value, metaData, record){
+    return String.format(
+      this.idsTemplate, 
+      value, 
+      record.get('repository-id'),
+      record.get('repository-name'),
+      record.get('repository-type')
+    );
+  },
+  
+  renderRepositoryColumn: function(value, metaData, record){
+    var type = repositoryTypeStore.queryBy(function(rec){
+      return rec.get('name') == record.get('repository-type');
+    }).itemAt(0);
+
+    var typeName = null;
+    if ( type ){
+      typeName = type.get('displayName');
+    } else {
+      typeName = record.get('repository-type');
+    }
+
+    return String.format(
+      this.repositoryTpl, 
+      record.get('repository-name'),
+      typeName
+    );
+  },
+  
+  createRepository: function(rev){
+    return {
+      id: rev[0],
+      name: rev[1],
+      type: rev[2]
+    }
+  },
+  
+  createRevision: function(rev){
+    var revision = rev[3];
+    var index = revision.indexOf(':');
+    if ( index >= 0 ){
+      revision = revision.substr(index+1);
+    }
+    return revision;
+  },
+  
+  onClick: function(e){
+    var el = e.getTarget('.cs-tree-link');
+    var rel, rev, repository, revision;
+    if (el && el.rel){
+      rel = el.rel;
+      rev = rel.split('|');
+      repository = this.createRepository(rev);
+      revision = this.createRevision(rev);
+      this.openRepositoryBrowser(repository, revision);
+    } else {      
+      el = e.getTarget('.cs-diff-link');
+      if ( el && el.rel ){
+        rel = el.rel;
+        rev = rel.split('|');
+        repository = this.createRepository(rev);
+        revision = this.createRevision(rev);
+        this.openDiffViewer(revision);
+      }
+    }
+  },
+  
+  openDiffViewer: function(repository, revision){
+    main.addTab({
+      id: 'diff-' + repository.id + ':' + revision,
+      xtype: 'diffPanel',
+      repository: repository,
+      revision: revision,
+      closable: true
+    });
+  },
+  
+  openRepositoryBrowser: function(repository, revision){
+    main.addTab({
+      id: 'repositorybrowser-' + repository.id + ':' + revision,
+      xtype: 'repositoryBrowser',
+      repository: repository,
+      revision: revision,
+      closable: true
     });
   }
 
