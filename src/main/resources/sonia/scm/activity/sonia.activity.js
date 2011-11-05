@@ -28,4 +28,98 @@
  * http://bitbucket.org/sdorra/scm-manager
  * 
  */
+Ext.ns("Sonia.activity");
 
+Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
+  
+  activityTitle: 'Activities',
+  
+  initComponent: function(){
+    
+    this.activityStore = new Ext.data.GroupingStore({
+      id: 'activityStore',
+      proxy: new Ext.data.HttpProxy({
+        url: restUrl + 'activity.json',
+        method: 'GET'
+      }),
+      reader: new Ext.data.JsonReader({
+        fields: [{ 
+          name: 'id',
+          mapping: 'changeset.id'
+        },{
+          name: 'date',
+          mapping: 'changeset.date'
+        }, {
+          name: 'author',
+          mapping: 'changeset.author'
+        },{
+          name: 'description',
+          mapping: 'changeset.description'
+        },{
+          name: 'modifications',
+          mapping: 'changeset.modifications'
+        },{
+          name: 'tags',
+          mapping: 'changeset.tags'
+        },{
+          name: 'branches',
+          mapping: 'changeset.branches'
+        },{
+          name: 'properties',
+          mapping: 'changeset.properties'
+        },{
+          name: 'repository'
+        }],
+        root: 'activities'
+      }),
+      sortInfo: {
+        field: 'date'
+      },
+      remoteGroup: false,
+      groupOnSort: true,
+      groupField: 'repository',
+      groupDir: 'AES',
+      autoLoad: true,
+      autoDestroy: true
+    });
+
+    var config = {
+      title: this.activityTitle,
+      items: [{
+        id: 'activityGrid',
+        xtype: 'repositoryChangesetViewerGrid',
+        store: this.activityStore/*,
+        view: new Ext.grid.GroupingView({
+          forceFit: true,
+          // custom grouping text template to display the number of items per group
+          groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
+        })*/
+      }]
+    }
+
+    Ext.apply(this, Ext.apply(this.initialConfig, config));
+    Sonia.activity.ActivityViewerPanel.superclass.initComponent.apply(this, arguments);
+  }
+  
+});
+
+// register xtype
+Ext.reg('activityViewerPanel', Sonia.activity.ActivityViewerPanel);
+
+Ext.override(Sonia.scm.Main, {
+  
+  createHomePanel: function(){
+    if ( debug ){
+      console.debug('create home panel');
+    }
+    this.mainTabPanel.add({
+      id: 'activities',
+      xtype: 'activityViewerPanel',
+      title: 'Activities',
+      closeable: false,
+      autoScroll: true
+    });
+    this.mainTabPanel.setActiveTab('activities');
+  }
+  
+});
