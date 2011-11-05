@@ -1,6 +1,7 @@
 # netbeans temp & private files
 /?target/
 release.properties
+nb-configuration.xml
 nbactions.*\.xml
 # MacOS X Files
 \.DS_Store$
