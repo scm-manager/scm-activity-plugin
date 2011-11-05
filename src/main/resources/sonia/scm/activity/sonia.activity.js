@@ -33,16 +33,39 @@ Ext.ns("Sonia.activity");
 
 Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
 
+  repositoryTpl: '{0} - {1}',
+
   initComponent: function(){
     Sonia.activity.ActivityGrid.superclass.initComponent.apply(this, arguments);
-    this.addColumn('repository', {
-      id: 'repository',
-      dataIndex: 'repository',
-      hidden: true
+    this.addColumn('repository-id', {
+      id: 'repository-id',
+      dataIndex: 'repository-id',
+      width: 0,
+      hidden: true,
+      renderer: function(value, metaData, record){
+        var type = repositoryTypeStore.queryBy(function(rec){
+          return rec.get('name') == record.get('repository-type');
+        }).itemAt(0);
+        
+        var typeName = null;
+        if ( type ){
+          typeName = type.get('displayName');
+        } else {
+          typeName = record.get('repository-type');
+        }
+        
+        return String.format(
+          this.repositoryTpl, 
+          record.get('repository-name'),
+          typeName
+        );
+      },
+      scope: this
     });
     this.addColumn('date', {
       id: 'date',
       dataIndex: 'date',
+      width: 0,
       hidden: true 
     });
   }
@@ -91,14 +114,18 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
           name: 'properties',
           mapping: 'changeset.properties'
         },{
-          name: 'repository'
+          name: 'repository-id'
+        },{
+          name: 'repository-name'
+        },{
+          name: 'repository-type'
         }],
         root: 'activities'
       }),
       remoteSort: true,
       remoteGroup: true,
       groupOnSort: false,
-      groupField: 'repository',
+      groupField: 'repository-id',
       groupDir: 'AES',
       autoLoad: true,
       autoDestroy: true
@@ -113,7 +140,7 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
         view: new Ext.grid.GroupingView({
           forceFit: true,
           // custom grouping text template to display the number of items per group
-          groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
+          groupTextTpl: '{group} / ({[values.rs.length]} {[values.rs.length > 1 ? "Changesets" : "Changeset"]})'
         })
       }]
     }

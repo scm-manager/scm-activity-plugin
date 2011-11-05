@@ -42,6 +42,7 @@ import sonia.scm.repository.Repository;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -68,7 +69,9 @@ public class Activity
    */
   public Activity(Repository repository, Changeset changeset)
   {
-    this.repository = repository.getId();
+    this.repositoryId = repository.getId();
+    this.repositoryName = repository.getName();
+    this.repositoryType = repository.getType();
     this.changeset = changeset;
   }
 
@@ -78,11 +81,15 @@ public class Activity
    *
    *
    * @param repositoryId
+   * @param repositoryName
+   * @param repositoryType
    * @param changeset
    */
-  public Activity(String repositoryId, Changeset changeset)
+  public Activity(String repositoryId, String repositoryName,
+                  String repositoryType, Changeset changeset)
   {
-    this.repository = repositoryId;
+    this.repositoryId = repositoryId;
+    this.repositoryName = repositoryName;
     this.changeset = changeset;
   }
 
@@ -107,7 +114,40 @@ public class Activity
    */
   public String getRepository()
   {
-    return repository;
+    return repositoryId;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getRepositoryId()
+  {
+    return repositoryId;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getRepositoryName()
+  {
+    return repositoryName;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  public String getRepositoryType()
+  {
+    return repositoryType;
   }
 
   //~--- set methods ----------------------------------------------------------
@@ -131,7 +171,40 @@ public class Activity
    */
   public void setRepository(String repository)
   {
-    this.repository = repository;
+    this.repositoryId = repository;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param repositoryId
+   */
+  public void setRepositoryId(String repositoryId)
+  {
+    this.repositoryId = repositoryId;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param repositoryName
+   */
+  public void setRepositoryName(String repositoryName)
+  {
+    this.repositoryName = repositoryName;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param repositoryType
+   */
+  public void setRepositoryType(String repositoryType)
+  {
+    this.repositoryType = repositoryType;
   }
 
   //~--- fields ---------------------------------------------------------------
@@ -140,5 +213,14 @@ public class Activity
   private Changeset changeset;
 
   /** Field description */
-  private String repository;
+  @XmlElement(name = "repository-id")
+  private String repositoryId;
+
+  /** Field description */
+  @XmlElement(name = "repository-name")
+  private String repositoryName;
+
+  /** Field description */
+  @XmlElement(name = "repository-type")
+  private String repositoryType;
 }
