@@ -33,9 +33,15 @@
 
 package sonia.scm.activity;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import sonia.scm.repository.Changeset;
+import sonia.scm.util.Util;
+
 //~--- JDK imports ------------------------------------------------------------
 
 import java.util.Comparator;
+import java.util.Date;
 
 /**
  *
@@ -62,7 +68,38 @@ public class ActivityComparator implements Comparator<Activity>
   @Override
   public int compare(Activity a1, Activity a2)
   {
-    return a2.getChangeset().getDate().intValue()
-           - a1.getChangeset().getDate().intValue();
+    return Util.compare(getDate(a2), getDate(a1));
+  }
+
+  //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param a
+   *
+   * @return
+   */
+  private Date getDate(Activity a)
+  {
+    Date d = null;
+
+    if (a != null)
+    {
+      Changeset c = a.getChangeset();
+
+      if (c != null)
+      {
+        Long time = c.getDate();
+
+        if (time != null)
+        {
+          d = new Date(time);
+        }
+      }
+    }
+
+    return d;
   }
 }

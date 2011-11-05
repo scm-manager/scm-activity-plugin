@@ -112,17 +112,6 @@ public class Activity
    *
    * @return
    */
-  public String getRepository()
-  {
-    return repositoryId;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
   public String getRepositoryId()
   {
     return repositoryId;
@@ -161,17 +150,6 @@ public class Activity
   public void setChangeset(Changeset changeset)
   {
     this.changeset = changeset;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   */
-  public void setRepository(String repository)
-  {
-    this.repositoryId = repository;
   }
 
   /**
