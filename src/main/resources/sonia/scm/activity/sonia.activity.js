@@ -30,6 +30,29 @@
  */
 Ext.ns("Sonia.activity");
 
+
+Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
+
+  initComponent: function(){
+    Sonia.activity.ActivityGrid.superclass.initComponent.apply(this, arguments);
+    this.addColumn('repository', {
+      id: 'repository',
+      dataIndex: 'repository',
+      hidden: true
+    });
+    this.addColumn('date', {
+      id: 'date',
+      dataIndex: 'date',
+      hidden: true 
+    });
+  }
+
+});
+
+// register xtype
+Ext.reg('activityGrid', Sonia.activity.ActivityGrid);
+
+
 Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
   
   activityTitle: 'Activities',
@@ -72,28 +95,26 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
         }],
         root: 'activities'
       }),
-      sortInfo: {
-        field: 'date'
-      },
-      remoteGroup: false,
-      groupOnSort: true,
+      remoteSort: true,
+      remoteGroup: true,
+      groupOnSort: false,
       groupField: 'repository',
       groupDir: 'AES',
       autoLoad: true,
       autoDestroy: true
     });
-
+    
     var config = {
       title: this.activityTitle,
       items: [{
         id: 'activityGrid',
-        xtype: 'repositoryChangesetViewerGrid',
-        store: this.activityStore/*,
+        xtype: 'activityGrid',
+        store: this.activityStore,
         view: new Ext.grid.GroupingView({
           forceFit: true,
           // custom grouping text template to display the number of items per group
           groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
-        })*/
+        })
       }]
     }
 
