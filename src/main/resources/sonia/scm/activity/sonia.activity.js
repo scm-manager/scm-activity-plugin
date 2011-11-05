@@ -210,7 +210,7 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
         xtype: 'activityGrid',
         store: this.activityStore,
         view: new Ext.grid.GroupingView({
-          forceFit: true,
+          forceFit: false,
           // custom grouping text template to display the number of items per group
           groupTextTpl: '{group} / ({[values.rs.length]} {[values.rs.length > 1 ? "Changesets" : "Changeset"]})'
         })
