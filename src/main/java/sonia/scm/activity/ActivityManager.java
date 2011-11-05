@@ -104,6 +104,7 @@ public class ActivityManager extends CacheClearHook
     this.repositoryManager = repositoryManager;
     this.securityContextProvider = securityContextProvider;
     init(repositoryManager, activityCache);
+    repositoryManager.addListener(this);
   }
 
   //~--- methods --------------------------------------------------------------
