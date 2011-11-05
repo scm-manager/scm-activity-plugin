@@ -101,23 +101,23 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
     return revision;
   },
   
+  handleElement: function(el, callback){
+    var rel = el.rel;
+    var rev = rel.split('|');
+    var repository = this.createRepository(rev);
+    var revision = this.createRevision(rev);
+    callback(repository, revision);
+  },
+  
   onClick: function(e){
     var el = e.getTarget('.cs-tree-link');
-    var rel, rev, repository, revision;
+    
     if (el && el.rel){
-      rel = el.rel;
-      rev = rel.split('|');
-      repository = this.createRepository(rev);
-      revision = this.createRevision(rev);
-      this.openRepositoryBrowser(repository, revision);
+      this.handleElement(el, this.openRepositoryBrowser);
     } else {      
       el = e.getTarget('.cs-diff-link');
       if ( el && el.rel ){
-        rel = el.rel;
-        rev = rel.split('|');
-        repository = this.createRepository(rev);
-        revision = this.createRevision(rev);
-        this.openDiffViewer(revision);
+        this.handleElement(el, this.openDiffViewer);
       }
     }
   },
