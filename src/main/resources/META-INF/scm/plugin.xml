@@ -40,6 +40,8 @@
   
   <resources>
     <script>/sonia/scm/activity/sonia.activity.js</script>
+    <script>/sonia/scm/activity/sonia.activity.activitygrid.js</script>
+    <script>/sonia/scm/activity/sonia.activity.activityviewerpanel.js</script>
   </resources>
 
 </plugin>
