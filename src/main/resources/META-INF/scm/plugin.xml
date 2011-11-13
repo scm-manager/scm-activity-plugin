@@ -36,6 +36,9 @@
 
   <information>
     <author>Sebastian Sdorra</author>
+    <screenshots>
+      <screenshot>http://download.scm-manager.org/images/scm-activity-plugin/screenshot-1.png</screenshot>
+    </screenshots>
   </information>
   
   <resources>
