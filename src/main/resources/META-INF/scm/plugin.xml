@@ -41,6 +41,10 @@
     </screenshots>
   </information>
   
+  <conditions>
+    <min-version>${project.parent.version}</min-version>
+  </conditions>
+  
   <resources>
     <script>/sonia/scm/activity/sonia.activity.js</script>
     <script>/sonia/scm/activity/sonia.activity.activitygrid.js</script>
