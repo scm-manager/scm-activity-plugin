@@ -37,7 +37,7 @@ Ext.override(Sonia.scm.Main, {
       console.debug('create home panel');
     }
     this.mainTabPanel.add({
-      id: 'activities',
+      id: 'activityViewerPanel',
       xtype: 'activityViewerPanel',
       title: 'Activities',
       closeable: false,
