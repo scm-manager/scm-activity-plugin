@@ -13,7 +13,7 @@
   <artifactId>scm-activity-plugin</artifactId>
   <version>1.2-SNAPSHOT</version>
   <name>scm-activity-plugin</name>
-  <url>https://bitbucket.org/sdorra/scm-manager</url>
+  <url>https://bitbucket.org/sdorra/scm-activity-plugin</url>
   <description>Shows the latest activity from your repositories.</description>
   
   <scm>
