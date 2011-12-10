@@ -43,7 +43,7 @@ Ext.override(Sonia.scm.Main, {
       closeable: false,
       autoScroll: true
     });
-    this.mainTabPanel.setActiveTab('activities');
+    this.mainTabPanel.setActiveTab('activityViewerPanel');
   }
   
 });
