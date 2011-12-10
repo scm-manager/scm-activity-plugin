@@ -35,6 +35,7 @@ Ext.ns("Sonia.activity");
 Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
   
   activityTitle: 'Activities',
+  emptyText: 'No activities available',
   
   initComponent: function(){
     
@@ -94,6 +95,7 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
         xtype: 'activityGrid',
         store: this.activityStore,
         view: new Ext.grid.GroupingView({
+          emptyText: this.emptyText,
           forceFit: false,
           // custom grouping text template to display the number of items per group
           groupTextTpl: '{group} / ({[values.rs.length]} {[values.rs.length > 1 ? "Changesets" : "Changeset"]})'
