@@ -37,6 +37,9 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
   activityTitle: 'Activities',
   emptyText: 'No activities available',
   
+  // 5min
+  refreshInterval: 300000,
+  
   initComponent: function(){
     
     this.activityStore = new Ext.data.GroupingStore({
@@ -102,9 +105,19 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
         })
       }]
     }
+    
+    Ext.TaskMgr.start({
+      run: this.refreshStore,
+      interval: this.refreshInterval,
+      scope: this
+    });
 
     Ext.apply(this, Ext.apply(this.initialConfig, config));
     Sonia.activity.ActivityViewerPanel.superclass.initComponent.apply(this, arguments);
+  },
+  
+  refreshStore: function(){
+    this.activityStore.reload();
   }
   
 });
