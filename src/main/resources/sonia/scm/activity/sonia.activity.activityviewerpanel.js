@@ -87,7 +87,7 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
       groupOnSort: false,
       groupField: 'repository-id',
       groupDir: 'AES',
-      autoLoad: true,
+      autoLoad: false,
       autoDestroy: true
     });
     
