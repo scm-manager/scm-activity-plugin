@@ -84,6 +84,34 @@ public class ActivityResource
     return activityManager.getLatestActivity(PAGE_SIZE);
   }
 
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @GET
+  @Path("atom")
+  @Produces(MediaType.APPLICATION_ATOM_XML)
+  public Activities getLatestAtomActivity()
+  {
+    return activityManager.getLatestActivity(PAGE_SIZE);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @GET
+  @Path("rss")
+  @Produces("application/rss+xml")
+  public Activities getLatestRssActivity()
+  {
+    return activityManager.getLatestActivity(PAGE_SIZE);
+  }
+
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */

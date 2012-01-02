@@ -47,3 +47,23 @@ Ext.override(Sonia.scm.Main, {
   }
   
 });
+
+// append rss+atom links
+
+Ext.onReady(function(){
+  
+  function appendLink(parent, type){
+    var el = document.createElement("link");
+    el.type = 'application/' + type + '+xml';
+    el.rel = 'alternate';
+    el.title = 'Acitity Feed';
+    el.href = restUrl + 'activity/' + type;
+    parent.appendChild(el);
+  }
+  
+  var head = document.getElementsByTagName('head')[0];
+  appendLink(head, 'atom');
+  appendLink(head, 'rss');
+  
+  
+});
