@@ -36,9 +36,18 @@ Ext.ns("Sonia.activity");
 Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
 
   repositoryTpl: '{0} - {1}',
+  newVersion: false,
 
   initComponent: function(){
-    this.idsTemplate = this.idsTemplate.replace(/rel="{0}"/g, 'rel="{1}|{2}|{3}|{0}"');
+    this.newVersion = this.isNewVersion();
+    if ( ! this.newVersion ){
+      if ( debug ){
+        console.debug('detected scm-manager version pre 1.11');
+      }
+      this.idsTemplate = this.idsTemplate.replace(/rel="{0}"/g, 'rel="{1}|{2}|{3}|{0}"');
+    } else if ( debug ) {
+      console.debug('detected scm-manager version post 1.11');
+    }
     
     Sonia.activity.ActivityGrid.superclass.initComponent.apply(this, arguments);
     this.addColumn('repository-id', {
@@ -57,7 +66,36 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
     });
   },
   
+  isNewVersion: function(){
+    var result = false;
+    try {
+      var version = state.version;
+      var parts = version.split('\.');
+      if ( parts[0] != '1' ){
+        result = true;
+      } else {
+        parts = parts[1].split('-');
+        result = parseInt(parts[0]) > 10;
+      }
+    } catch (e){
+      if (debug){
+        console.debug(e);
+      }
+    }
+    return result;
+  },
+  
   renderIds: function(value, metaData, record){
+    var result = null;
+    if (this.newVersion){
+      result = this.renderIdsNew(value, record);
+    } else {
+      result = this.renderIdsOld(value, record);
+    }
+    return result;
+  },
+  
+  renderIdsOld: function(value, record){
     return String.format(
       this.idsTemplate, 
       value, 
@@ -65,6 +103,48 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
       record.get('repository-name'),
       record.get('repository-type')
     );
+  },
+  
+  renderIdsNew: function(value, record){
+    var parent = null;
+    var parent2 = null;
+    var parents = record.get('parents');
+    if ( parents ){
+      parent = parents[0];
+      if ( parents.length >= 1 ){
+        parent2 = parents[1];
+      }
+    }
+    var ids = this.idsTemplate.apply({
+      id: value,
+      parent: parent,
+      parent2: parent2
+    });
+    
+    ids = this.replaceIdRel(ids, value, record);
+    ids = this.replaceIdRel(ids, parent, record);
+    ids = this.replaceIdRel(ids, parent2, record);
+    
+    return ids;
+  },
+  
+  replaceIdRel: function(ids, value, record){
+    if (value){
+      var regex = new RegExp('rel="' + value + '"' , 'g');
+      //ids = regex.replace(ids, 'rel="' + this.createIdRel(value, record) + '"');
+      ids = ids.replace(regex, 'rel="' + this.createIdRel(value, record) + '"');
+    }
+    return ids;
+  },
+  
+  createIdRel: function(value, record){
+    if (value){
+      value = record.get('repository-id') + '|' + 
+              record.get('repository-name') + '|' + 
+              record.get('repository-type') + '|' + 
+              value;
+    }
+    return value;
   },
   
   renderRepositoryColumn: function(value, metaData, record){

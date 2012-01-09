@@ -71,6 +71,9 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
           name: 'branches',
           mapping: 'changeset.branches'
         },{
+          name: 'parents',
+          mapping: 'changeset.parents'
+        },{
           name: 'properties',
           mapping: 'changeset.properties'
         },{
