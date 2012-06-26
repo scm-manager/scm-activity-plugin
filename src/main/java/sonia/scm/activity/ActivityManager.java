@@ -35,6 +35,7 @@ package sonia.scm.activity;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -48,10 +49,11 @@ import sonia.scm.cache.CacheManager;
 import sonia.scm.repository.CacheClearHook;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPagingResult;
-import sonia.scm.repository.ChangesetViewerUtil;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryListener;
 import sonia.scm.repository.RepositoryManager;
+import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.user.User;
 import sonia.scm.util.AssertUtil;
 import sonia.scm.util.SecurityUtil;
@@ -88,19 +90,20 @@ public class ActivityManager extends CacheClearHook
    *
    *
    * @param cacheManager
+   * @param repositoryServiceFactory
    * @param repositoryManager
    * @param changesetViewerUtil
    * @param securityContextProvider
    */
   @Inject
   public ActivityManager(CacheManager cacheManager,
-                         ChangesetViewerUtil changesetViewerUtil,
+                         RepositoryServiceFactory repositoryServiceFactory,
                          RepositoryManager repositoryManager,
                          Provider<WebSecurityContext> securityContextProvider)
   {
     this.activityCache = cacheManager.getCache(String.class, Activities.class,
             CACHE_NAME);
-    this.changesetViewerUtil = changesetViewerUtil;
+    this.repositoryServiceFactory = repositoryServiceFactory;
     this.repositoryManager = repositoryManager;
     this.securityContextProvider = securityContextProvider;
     init(repositoryManager, activityCache);
@@ -157,16 +160,21 @@ public class ActivityManager extends CacheClearHook
    *
    *
    * @param activityList
-   * @param r
+   * @param repository
    * @param pageSize
    */
-  private void appendActivities(List<Activity> activityList, Repository r,
-                                int pageSize)
+  private void appendActivities(List<Activity> activityList,
+                                Repository repository, int pageSize)
   {
+    RepositoryService repositoryService = null;
+
     try
     {
-      ChangesetPagingResult cpr = changesetViewerUtil.getChangesets(r, 0,
-                                    pageSize);
+      repositoryService = repositoryServiceFactory.create(repository);
+
+      ChangesetPagingResult cpr =
+        repositoryService.getLogCommand().setPagingLimit(
+            pageSize).getChangesets();
 
       if (cpr != null)
       {
@@ -176,7 +184,7 @@ public class ActivityManager extends CacheClearHook
         {
           for (Changeset c : changesetList)
           {
-            activityList.add(new Activity(r, c));
+            activityList.add(new Activity(repository, c));
           }
         }
       }
@@ -184,7 +192,12 @@ public class ActivityManager extends CacheClearHook
     catch (Exception ex)
     {
       logger.error(
-          "could retrieve changesets for repository ".concat(r.getName()), ex);
+          "could retrieve changesets for repository ".concat(
+            repository.getName()), ex);
+    }
+    finally
+    {
+      Closeables.closeQuietly(repositoryService);
     }
   }
 
@@ -224,10 +237,10 @@ public class ActivityManager extends CacheClearHook
   private Cache<String, Activities> activityCache;
 
   /** Field description */
-  private ChangesetViewerUtil changesetViewerUtil;
+  private RepositoryManager repositoryManager;
 
   /** Field description */
-  private RepositoryManager repositoryManager;
+  private RepositoryServiceFactory repositoryServiceFactory;
 
   /** Field description */
   private Provider<WebSecurityContext> securityContextProvider;
