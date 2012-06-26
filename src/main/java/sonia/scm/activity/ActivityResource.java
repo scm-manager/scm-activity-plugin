@@ -53,7 +53,7 @@ public class ActivityResource
 {
 
   /** Field description */
-  public static final int PAGE_SIZE = 25;
+  public static final int PAGE_SIZE = 20;
 
   //~--- constructors ---------------------------------------------------------
 
