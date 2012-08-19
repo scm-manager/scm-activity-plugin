@@ -197,19 +197,19 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
     } else {      
       el = e.getTarget('.cs-diff-link');
       if ( el && el.rel ){
-        this.handleElement(el, this.openDiffViewer);
+        this.handleElement(el, this.openChangeset);
       }
     }
   },
   
-  openDiffViewer: function(repository, revision){
+  openChangeset: function(repository, revision){
     main.addTab({
-      id: 'diff-' + repository.id + ':' + revision,
-      xtype: 'diffPanel',
+      id: 'changesetPanel;' + repository.id + ';' + revision,
+      xtype: 'changesetPanel',
       repository: repository,
       revision: revision,
       closable: true
-    });
+    });  
   },
   
   openRepositoryBrowser: function(repository, revision){
