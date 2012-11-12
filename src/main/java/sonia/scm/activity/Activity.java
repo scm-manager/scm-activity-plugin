@@ -139,52 +139,6 @@ public class Activity
     return repositoryType;
   }
 
-  //~--- set methods ----------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @param changeset
-   */
-  public void setChangeset(Changeset changeset)
-  {
-    this.changeset = changeset;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param repositoryId
-   */
-  public void setRepositoryId(String repositoryId)
-  {
-    this.repositoryId = repositoryId;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param repositoryName
-   */
-  public void setRepositoryName(String repositoryName)
-  {
-    this.repositoryName = repositoryName;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param repositoryType
-   */
-  public void setRepositoryType(String repositoryType)
-  {
-    this.repositoryType = repositoryType;
-  }
-
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
