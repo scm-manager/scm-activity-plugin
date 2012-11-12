@@ -35,6 +35,8 @@ package sonia.scm.activity;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -61,10 +63,9 @@ import sonia.scm.web.security.WebSecurityContext;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -72,7 +73,7 @@ import java.util.List;
  */
 @Singleton
 public class ActivityManager extends CacheClearHook
-        implements RepositoryListener
+  implements RepositoryListener
 {
 
   /** Field description */
@@ -97,12 +98,12 @@ public class ActivityManager extends CacheClearHook
    */
   @Inject
   public ActivityManager(CacheManager cacheManager,
-                         RepositoryServiceFactory repositoryServiceFactory,
-                         RepositoryManager repositoryManager,
-                         Provider<WebSecurityContext> securityContextProvider)
+    RepositoryServiceFactory repositoryServiceFactory,
+    RepositoryManager repositoryManager,
+    Provider<WebSecurityContext> securityContextProvider)
   {
     this.activityCache = cacheManager.getCache(String.class, Activities.class,
-            CACHE_NAME);
+      CACHE_NAME);
     this.repositoryServiceFactory = repositoryServiceFactory;
     this.repositoryManager = repositoryManager;
     this.securityContextProvider = securityContextProvider;
@@ -163,8 +164,8 @@ public class ActivityManager extends CacheClearHook
    * @param repository
    * @param pageSize
    */
-  private void appendActivities(List<Activity> activityList,
-                                Repository repository, int pageSize)
+  private void appendActivities(Set<Activity> activityList,
+    Repository repository, int pageSize)
   {
     RepositoryService repositoryService = null;
 
@@ -174,7 +175,7 @@ public class ActivityManager extends CacheClearHook
 
       ChangesetPagingResult cpr =
         repositoryService.getLogCommand().setPagingLimit(
-            pageSize).getChangesets();
+          pageSize).getChangesets();
 
       if (cpr != null)
       {
@@ -192,8 +193,8 @@ public class ActivityManager extends CacheClearHook
     catch (Exception ex)
     {
       logger.error(
-          "could retrieve changesets for repository ".concat(
-            repository.getName()), ex);
+        "could retrieve changesets for repository ".concat(
+          repository.getName()), ex);
     }
     finally
     {
@@ -213,17 +214,18 @@ public class ActivityManager extends CacheClearHook
    */
   private Activities getActivities(int pageSize)
   {
-    List<Activity> activityList = new ArrayList<Activity>();
+    Set<Activity> activitySet = Sets.newHashSet();
     Collection<Repository> repositories = repositoryManager.getAll();
 
     for (Repository r : repositories)
     {
-      appendActivities(activityList, r, pageSize);
+      appendActivities(activitySet, r, pageSize);
     }
 
-    Collections.sort(activityList, ActivityComparator.INSTANCE);
+    List<Activity> activityList =
+      Ordering.from(ActivityComparator.INSTANCE).sortedCopy(activitySet);
 
-    if (activityList.size() > pageSize)
+    if (activitySet.size() > pageSize)
     {
       activityList = activityList.subList(0, pageSize);
     }

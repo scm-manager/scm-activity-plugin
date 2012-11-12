@@ -35,8 +35,12 @@ package sonia.scm.activity;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Objects;
+import com.google.common.base.Strings;
+
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.Repository;
+import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -86,11 +90,52 @@ public class Activity
    * @param changeset
    */
   public Activity(String repositoryId, String repositoryName,
-                  String repositoryType, Changeset changeset)
+    String repositoryType, Changeset changeset)
   {
     this.repositoryId = repositoryId;
     this.repositoryName = repositoryName;
     this.changeset = changeset;
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param obj
+   *
+   * @return
+   */
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (obj == null)
+    {
+      return false;
+    }
+
+    if (getClass() != obj.getClass())
+    {
+      return false;
+    }
+
+    final Activity other = (Activity) obj;
+
+    return Objects.equal(repositoryId, other.repositoryId)
+      && Objects.equal(getChangesetId(), other.getChangesetId());
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
+  public int hashCode()
+  {
+    return Objects.hashCode(repositoryId, getChangesetId());
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -137,6 +182,24 @@ public class Activity
   public String getRepositoryType()
   {
     return repositoryType;
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  private String getChangesetId()
+  {
+    String id = Util.EMPTY_STRING;
+
+    if (changeset != null)
+    {
+      id = changeset.getId();
+    }
+
+    return Strings.nullToEmpty(id);
   }
 
   //~--- fields ---------------------------------------------------------------
