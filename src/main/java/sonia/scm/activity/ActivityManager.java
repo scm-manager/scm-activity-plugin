@@ -46,6 +46,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sonia.scm.HandlerEvent;
+import sonia.scm.activity.collector.ChangesetCollector;
+import sonia.scm.activity.collector.ChangesetCollectorFactory;
 import sonia.scm.cache.Cache;
 import sonia.scm.cache.CacheManager;
 import sonia.scm.repository.CacheClearHook;
@@ -167,39 +169,17 @@ public class ActivityManager extends CacheClearHook
   private void appendActivities(Set<Activity> activityList,
     Repository repository, int pageSize)
   {
-    RepositoryService repositoryService = null;
+    ChangesetCollector collector =
+      ChangesetCollectorFactory.createCollector(repository);
 
-    try
+    if (logger.isDebugEnabled())
     {
-      repositoryService = repositoryServiceFactory.create(repository);
-
-      ChangesetPagingResult cpr =
-        repositoryService.getLogCommand().setPagingLimit(
-          pageSize).getChangesets();
-
-      if (cpr != null)
-      {
-        List<Changeset> changesetList = cpr.getChangesets();
-
-        if (changesetList != null)
-        {
-          for (Changeset c : changesetList)
-          {
-            activityList.add(new Activity(repository, c));
-          }
-        }
-      }
+      logger.debug("collect changesets for repository {} with collector {}",
+        repository.getName(), collector.getClass());
     }
-    catch (Exception ex)
-    {
-      logger.error(
-        "could retrieve changesets for repository ".concat(
-          repository.getName()), ex);
-    }
-    finally
-    {
-      Closeables.closeQuietly(repositoryService);
-    }
+
+    collector.collectChangesets(repositoryServiceFactory, activityList,
+      repository, pageSize);
   }
 
   //~--- get methods ----------------------------------------------------------
