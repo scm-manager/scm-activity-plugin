@@ -33,19 +33,25 @@ package sonia.scm.activity.collector;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
 import sonia.scm.activity.Activity;
 import sonia.scm.repository.Branch;
 import sonia.scm.repository.Branches;
+import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.api.LogCommandBuilder;
 import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.IOException;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -78,14 +84,79 @@ public class NonCombinedBranchCollector extends AbstractChangesetCollector
     {
       LogCommandBuilder log = repositoryService.getLogCommand();
 
+      ChangesetPagingResult cpr =
+        log.setPagingStart(0).setPagingLimit(pageSize).getChangesets();
+      String defaultBranch = getBranch(cpr);
+
+      appendChangesets(activitySet, repository, cpr);
+
       for (Branch branch : branches)
       {
-        ChangesetPagingResult cpr = log.setPagingStart(0).setPagingLimit(
-                                      pageSize).setBranch(
-                                      branch.getName()).getChangesets();
+        String name = branch.getName();
 
-        appendChangesets(activitySet, repository, cpr);
+        if (Strings.isNullOrEmpty(defaultBranch) ||!name.equals(defaultBranch))
+        {
+          cpr = log.setPagingStart(0).setPagingLimit(pageSize).setBranch(
+            name).getChangesets();
+
+          prepareChangesetPagingResult(cpr, name);
+          appendChangesets(activitySet, repository, cpr);
+        }
       }
     }
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param cpr
+   * @param branch
+   */
+  private void prepareChangesetPagingResult(ChangesetPagingResult cpr,
+    String branch)
+  {
+    if (cpr != null)
+    {
+      List<String> list = Lists.newArrayList(branch);
+
+      for (Changeset c : cpr)
+      {
+        c.setBranches(list);
+      }
+    }
+  }
+
+  //~--- get methods ----------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param cpr
+   *
+   * @return
+   */
+  private String getBranch(ChangesetPagingResult cpr)
+  {
+    String branch = null;
+    List<Changeset> changesets = cpr.getChangesets();
+
+    if (changesets != null)
+    {
+      Changeset c = changesets.get(0);
+
+      if (c != null)
+      {
+        List<String> defaultBranches = c.getBranches();
+
+        if (Util.isNotEmpty(defaultBranches))
+        {
+          branch = defaultBranches.get(0);
+        }
+      }
+    }
+
+    return branch;
   }
 }
