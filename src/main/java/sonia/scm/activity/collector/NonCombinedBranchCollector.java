@@ -30,6 +30,7 @@
  */
 
 
+
 package sonia.scm.activity.collector;
 
 //~--- non-JDK imports --------------------------------------------------------
@@ -143,7 +144,7 @@ public class NonCombinedBranchCollector extends AbstractChangesetCollector
     String branch = null;
     List<Changeset> changesets = cpr.getChangesets();
 
-    if (changesets != null)
+    if (Util.isNotEmpty(changesets))
     {
       Changeset c = changesets.get(0);
 
