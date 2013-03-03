@@ -35,6 +35,7 @@ package sonia.scm.activity;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -203,7 +204,7 @@ public class ActivityManager extends CacheClearHook
 
     if (activitySet.size() > pageSize)
     {
-      activityList = activityList.subList(0, pageSize);
+      activityList = ImmutableList.copyOf(activityList.subList(0, pageSize));
     }
 
     return new Activities(activityList);
