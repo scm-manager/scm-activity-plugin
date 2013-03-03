@@ -44,6 +44,8 @@ import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -55,8 +57,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "activity")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Activity
+public class Activity implements Serializable
 {
+
+  /** Field description */
+  private static final long serialVersionUID = -1127284739982493951L;
+
+  //~--- constructors ---------------------------------------------------------
 
   /**
    * Constructs ...
