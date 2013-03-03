@@ -33,6 +33,10 @@
 
 package sonia.scm.activity;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import com.google.common.base.Objects;
+
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
@@ -74,6 +78,62 @@ public class Activities implements Serializable
   public Activities(List<Activity> activities)
   {
     this.activities = activities;
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param obj
+   *
+   * @return
+   */
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (obj == null)
+    {
+      return false;
+    }
+
+    if (getClass() != obj.getClass())
+    {
+      return false;
+    }
+
+    final Activities other = (Activities) obj;
+
+    return Objects.equal(activities, other.activities);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
+  public int hashCode()
+  {
+    return Objects.hashCode(activities);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("activities", activities)
+                  .toString();
+    //J+
   }
 
   //~--- get methods ----------------------------------------------------------

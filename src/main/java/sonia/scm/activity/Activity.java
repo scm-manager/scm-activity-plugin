@@ -145,6 +145,25 @@ public class Activity implements Serializable
     return Objects.hashCode(repositoryId, getChangesetId());
   }
 
+  /**
+   * Method description
+   *
+   *
+   * @return
+   */
+  @Override
+  public String toString()
+  {
+    //J-
+    return Objects.toStringHelper(this)
+                  .add("repositoryId", repositoryId)
+                  .add("repositoryType", repositoryType)
+                  .add("repositoryName", repositoryName)
+                  .add("changeset", changeset)
+                  .toString();
+    //J+
+  }
+
   //~--- get methods ----------------------------------------------------------
 
   /**
