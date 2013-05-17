@@ -70,7 +70,7 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
     try {
       var version = state.version;
       var parts = version.split('\.');
-      if ( parts[0] != '1' ){
+      if ( parts[0] !== '1' ){
         result = true;
       } else {
         parts = parts[1].split('-');
@@ -148,7 +148,7 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
   
   renderRepositoryColumn: function(value, metaData, record){
     var type = repositoryTypeStore.queryBy(function(rec){
-      return rec.get('name') == record.get('repository-type');
+      return rec.get('name') === record.get('repository-type');
     }).itemAt(0);
 
     var typeName = null;
@@ -170,7 +170,7 @@ Sonia.activity.ActivityGrid = Ext.extend(Sonia.repository.ChangesetViewerGrid, {
       id: rev[0],
       name: rev[1],
       type: rev[2]
-    }
+    };
   },
   
   createRevision: function(rev){

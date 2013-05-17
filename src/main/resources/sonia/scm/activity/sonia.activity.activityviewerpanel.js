@@ -106,7 +106,7 @@ Sonia.activity.ActivityViewerPanel = Ext.extend(Ext.Panel, {
           groupTextTpl: '{group} / ({[values.rs.length]} {[values.rs.length > 1 ? "Changesets" : "Changeset"]})'
         })
       }]
-    }
+    };
     
     Ext.TaskMgr.start({
       run: this.refreshStore,
