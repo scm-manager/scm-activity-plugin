@@ -37,11 +37,13 @@ package sonia.scm.activity.collector;
 
 import com.google.common.collect.ImmutableSet;
 
+import sonia.scm.cache.Cache;
 import sonia.scm.repository.Repository;
 
 //~--- JDK imports ------------------------------------------------------------
 
 import java.util.Set;
+import sonia.scm.activity.ActivitySet;
 
 /**
  *
@@ -60,16 +62,18 @@ public class ChangesetCollectorFactory
    *
    *
    * @param repository
+   * @param cache
    *
    * @return
    */
-  public static ChangesetCollector createCollector(Repository repository)
+  public static ChangesetCollector createCollector(Repository repository,
+    Cache<String, ActivitySet> cache)
   {
     ChangesetCollector collector;
 
     if (NON_COMBINED_BRANCH.contains(repository.getType()))
     {
-      collector = new NonCombinedBranchCollector();
+      collector = new NonCombinedBranchCollector(cache);
     }
     else
     {

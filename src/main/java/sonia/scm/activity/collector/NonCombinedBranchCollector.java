@@ -39,6 +39,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import sonia.scm.activity.Activity;
+import sonia.scm.activity.ActivitySet;
+import sonia.scm.cache.Cache;
 import sonia.scm.repository.Branch;
 import sonia.scm.repository.Branches;
 import sonia.scm.repository.Changeset;
@@ -47,6 +49,7 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.api.LogCommandBuilder;
 import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.util.Util;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -62,6 +65,49 @@ import java.util.Set;
  */
 public class NonCombinedBranchCollector extends AbstractChangesetCollector
 {
+
+  /**
+   * Constructs ...
+   *
+   *
+   * @param activityCache
+   *
+   * @param activitiesCache
+   */
+  public NonCombinedBranchCollector(Cache<String, ActivitySet> activitiesCache)
+  {
+    this.activitiesCache = activitiesCache;
+  }
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param repositoryServiceFactory
+   * @param activitySet
+   * @param repository
+   * @param pageSize
+   */
+  @Override
+  public void collectChangesets(
+    RepositoryServiceFactory repositoryServiceFactory,
+    Set<Activity> activitySet, Repository repository, int pageSize)
+  {
+
+    ActivitySet activities = activitiesCache.get(repository.getId());
+
+    if (activities == null)
+    {
+      activities = new ActivitySet(pageSize);
+      super.collectChangesets(repositoryServiceFactory, activities, repository,
+        pageSize);
+      activitiesCache.put(repository.getId(), activities);
+    }
+
+    activitySet.addAll(activities);
+  }
 
   /**
    * Method description
@@ -84,10 +130,15 @@ public class NonCombinedBranchCollector extends AbstractChangesetCollector
 
     if (branches != null)
     {
-      LogCommandBuilder log = repositoryService.getLogCommand();
+      //J-
+      LogCommandBuilder log = repositoryService.getLogCommand()
+                                               .setDisableCache(true);
 
-      ChangesetPagingResult cpr =
-        log.setPagingStart(0).setPagingLimit(pageSize).getChangesets();
+      ChangesetPagingResult cpr = log.setPagingStart(0)
+                                     .setPagingLimit(pageSize)
+                                     .getChangesets();
+      //J+
+
       String defaultBranch = getBranch(cpr);
 
       appendChangesets(activitySet, repository, cpr);
@@ -161,4 +212,9 @@ public class NonCombinedBranchCollector extends AbstractChangesetCollector
 
     return branch;
   }
+
+  //~--- fields ---------------------------------------------------------------
+
+  /** Field description */
+  private Cache<String, ActivitySet> activitiesCache;
 }

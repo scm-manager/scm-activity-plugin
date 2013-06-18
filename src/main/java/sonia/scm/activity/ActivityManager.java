@@ -38,6 +38,7 @@ package sonia.scm.activity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -47,15 +48,15 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.HandlerEvent;
 import sonia.scm.SCMContext;
 import sonia.scm.activity.collector.ChangesetCollector;
 import sonia.scm.activity.collector.ChangesetCollectorFactory;
 import sonia.scm.cache.Cache;
 import sonia.scm.cache.CacheManager;
-import sonia.scm.repository.CacheClearHook;
+import sonia.scm.event.Subscriber;
+import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryListener;
+import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.security.Role;
@@ -71,12 +72,16 @@ import java.util.Set;
  * @author Sebastian Sdorra
  */
 @Singleton
-public class ActivityManager extends CacheClearHook
-  implements RepositoryListener
+@Subscriber
+public class ActivityManager
 {
 
   /** Field description */
-  public static final String CACHE_NAME = "sonia.cache.activity";
+  public static final String CACHE_REPOSITORY =
+    "sonia.cache.activity.repository";
+
+  /** Field description */
+  public static final String CACHE_USER = "sonia.cache.activity.user";
 
   /** Field description */
   private static final String NAME_ADMIN = "__admin-role";
@@ -103,12 +108,12 @@ public class ActivityManager extends CacheClearHook
     RepositoryServiceFactory repositoryServiceFactory,
     RepositoryManager repositoryManager)
   {
-    this.activityCache = cacheManager.getCache(String.class, Activities.class,
-      CACHE_NAME);
+    this.userCache = cacheManager.getCache(String.class, Activities.class,
+      CACHE_USER);
+    this.repositoryCache = cacheManager.getCache(String.class,
+      ActivitySet.class, CACHE_REPOSITORY);
     this.repositoryServiceFactory = repositoryServiceFactory;
     this.repositoryManager = repositoryManager;
-    init(repositoryManager, activityCache);
-    repositoryManager.addListener(this);
   }
 
   //~--- methods --------------------------------------------------------------
@@ -120,10 +125,25 @@ public class ActivityManager extends CacheClearHook
    * @param repository
    * @param event
    */
-  @Override
-  public void onEvent(Repository repository, HandlerEvent event)
+  @Subscribe
+  public void onEvent(PostReceiveRepositoryHookEvent event)
   {
-    clearCache();
+    this.clearCaches(event.getRepository());
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param event
+   */
+  @Subscribe
+  public void onEvent(RepositoryEvent event)
+  {
+    if (event.getEventType().isPost())
+    {
+      this.clearCaches(event.getItem());
+    }
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -155,12 +175,12 @@ public class ActivityManager extends CacheClearHook
       name = SCMContext.USER_ANONYMOUS;
     }
 
-    Activities activities = activityCache.get(name);
+    Activities activities = userCache.get(name);
 
     if (activities == null)
     {
       activities = getActivities(pageSize);
-      activityCache.put(name, activities);
+      userCache.put(name, activities);
     }
 
     return activities;
@@ -181,7 +201,7 @@ public class ActivityManager extends CacheClearHook
     Repository repository, int pageSize)
   {
     ChangesetCollector collector =
-      ChangesetCollectorFactory.createCollector(repository);
+      ChangesetCollectorFactory.createCollector(repository, repositoryCache);
 
     if (logger.isDebugEnabled())
     {
@@ -191,6 +211,20 @@ public class ActivityManager extends CacheClearHook
 
     collector.collectChangesets(repositoryServiceFactory, activityList,
       repository, pageSize);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   */
+  private void clearCaches(Repository repository)
+  {
+    logger.debug("clear caches beacause repository {} has changed",
+      repository.getId());
+    userCache.clear();
+    repositoryCache.remove(repository.getId());
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -227,11 +261,14 @@ public class ActivityManager extends CacheClearHook
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private Cache<String, Activities> activityCache;
+  private Cache<String, ActivitySet> repositoryCache;
 
   /** Field description */
   private RepositoryManager repositoryManager;
 
   /** Field description */
   private RepositoryServiceFactory repositoryServiceFactory;
+
+  /** Field description */
+  private Cache<String, Activities> userCache;
 }
