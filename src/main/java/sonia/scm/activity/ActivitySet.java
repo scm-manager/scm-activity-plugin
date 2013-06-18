@@ -33,8 +33,7 @@ package sonia.scm.activity;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import sonia.scm.activity.Activity;
-import sonia.scm.activity.ActivityComparator;
+import sonia.scm.collect.LimitedSortedSet;
 
 /**
  *
