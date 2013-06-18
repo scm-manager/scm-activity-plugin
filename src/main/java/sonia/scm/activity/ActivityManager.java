@@ -42,10 +42,14 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sonia.scm.HandlerEvent;
+import sonia.scm.SCMContext;
 import sonia.scm.activity.collector.ChangesetCollector;
 import sonia.scm.activity.collector.ChangesetCollectorFactory;
 import sonia.scm.cache.Cache;
@@ -55,6 +59,7 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryListener;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
+import sonia.scm.security.Role;
 import sonia.scm.user.User;
 import sonia.scm.util.AssertUtil;
 import sonia.scm.util.SecurityUtil;
@@ -98,14 +103,12 @@ public class ActivityManager extends CacheClearHook
   @Inject
   public ActivityManager(CacheManager cacheManager,
     RepositoryServiceFactory repositoryServiceFactory,
-    RepositoryManager repositoryManager,
-    Provider<WebSecurityContext> securityContextProvider)
+    RepositoryManager repositoryManager)
   {
     this.activityCache = cacheManager.getCache(String.class, Activities.class,
       CACHE_NAME);
     this.repositoryServiceFactory = repositoryServiceFactory;
     this.repositoryManager = repositoryManager;
-    this.securityContextProvider = securityContextProvider;
     init(repositoryManager, activityCache);
     repositoryManager.addListener(this);
   }
@@ -137,16 +140,24 @@ public class ActivityManager extends CacheClearHook
    */
   public Activities getLatestActivity(int pageSize)
   {
-    User user = SecurityUtil.getCurrentUser(securityContextProvider);
+    Subject subject = SecurityUtils.getSubject();
+    String name;
 
-    AssertUtil.assertIsNotNull(user);
+    if (subject.hasRole(Role.USER))
+    {
+      name = (String) subject.getPrincipal();
+    }
+    else
+    {
+      name = SCMContext.USER_ANONYMOUS;
+    }
 
-    Activities activities = activityCache.get(user.getName());
+    Activities activities = activityCache.get(name);
 
     if (activities == null)
     {
       activities = getActivities(pageSize);
-      activityCache.put(user.getName(), activities);
+      activityCache.put(name, activities);
     }
 
     return activities;
@@ -220,7 +231,4 @@ public class ActivityManager extends CacheClearHook
 
   /** Field description */
   private RepositoryServiceFactory repositoryServiceFactory;
-
-  /** Field description */
-  private Provider<WebSecurityContext> securityContextProvider;
 }
