@@ -39,7 +39,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.apache.shiro.SecurityUtils;
@@ -60,10 +59,6 @@ import sonia.scm.repository.RepositoryListener;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.security.Role;
-import sonia.scm.user.User;
-import sonia.scm.util.AssertUtil;
-import sonia.scm.util.SecurityUtil;
-import sonia.scm.web.security.WebSecurityContext;
 
 //~--- JDK imports ------------------------------------------------------------
 
