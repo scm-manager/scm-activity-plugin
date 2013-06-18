@@ -28,11 +28,20 @@
  * http://bitbucket.org/sdorra/scm-manager
  *
  */
+
+
+
 package sonia.scm.activity.collector;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import com.google.common.collect.ImmutableSet;
-import java.util.Set;
+
 import sonia.scm.repository.Repository;
+
+//~--- JDK imports ------------------------------------------------------------
+
+import java.util.Set;
 
 /**
  *
@@ -40,18 +49,33 @@ import sonia.scm.repository.Repository;
  */
 public class ChangesetCollectorFactory
 {
-  
+
+  /** Field description */
   private static final Set<String> NON_COMBINED_BRANCH = ImmutableSet.of("git");
-  
+
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   *
+   * @return
+   */
   public static ChangesetCollector createCollector(Repository repository)
   {
-    ChangesetCollector collector = null;
-    if ( NON_COMBINED_BRANCH.contains(repository.getType()) ){
+    ChangesetCollector collector;
+
+    if (NON_COMBINED_BRANCH.contains(repository.getType()))
+    {
       collector = new NonCombinedBranchCollector();
-    } else {
+    }
+    else
+    {
       collector = new CombinedBranchCollector();
     }
+
     return collector;
   }
-  
 }
