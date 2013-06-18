@@ -78,6 +78,9 @@ public class ActivityManager extends CacheClearHook
   /** Field description */
   public static final String CACHE_NAME = "sonia.cache.activity";
 
+  /** Field description */
+  private static final String NAME_ADMIN = "__admin-role";
+
   /** the logger for ActivityManager */
   private static final Logger logger =
     LoggerFactory.getLogger(ActivityManager.class);
@@ -138,7 +141,12 @@ public class ActivityManager extends CacheClearHook
     Subject subject = SecurityUtils.getSubject();
     String name;
 
-    if (subject.hasRole(Role.USER))
+    // use only one cache key for all administrators
+    if (subject.hasRole(Role.ADMIN))
+    {
+      name = NAME_ADMIN;
+    }
+    else if (subject.hasRole(Role.USER))
     {
       name = (String) subject.getPrincipal();
     }
