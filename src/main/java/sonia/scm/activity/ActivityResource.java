@@ -115,5 +115,5 @@ public class ActivityResource
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private ActivityManager activityManager;
+  private final ActivityManager activityManager;
 }

@@ -60,6 +60,7 @@ import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 import sonia.scm.security.Role;
+import sonia.scm.security.StoredAssignedPermissionEvent;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -100,8 +101,6 @@ public class ActivityManager
    * @param cacheManager
    * @param repositoryServiceFactory
    * @param repositoryManager
-   * @param changesetViewerUtil
-   * @param securityContextProvider
    */
   @Inject
   public ActivityManager(CacheManager cacheManager,
@@ -122,13 +121,25 @@ public class ActivityManager
    * Method description
    *
    *
-   * @param repository
    * @param event
    */
   @Subscribe
   public void onEvent(PostReceiveRepositoryHookEvent event)
   {
     this.clearCaches(event.getRepository());
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param event
+   */
+  @Subscribe
+  public void onEvent(StoredAssignedPermissionEvent event)
+  {
+    logger.info("clear user cache, because a global permission has changed");
+    userCache.clear();
   }
 
   /**
@@ -261,14 +272,14 @@ public class ActivityManager
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private Cache<String, ActivitySet> repositoryCache;
+  private final Cache<String, ActivitySet> repositoryCache;
 
   /** Field description */
-  private RepositoryManager repositoryManager;
+  private final RepositoryManager repositoryManager;
 
   /** Field description */
-  private RepositoryServiceFactory repositoryServiceFactory;
+  private final RepositoryServiceFactory repositoryServiceFactory;
 
   /** Field description */
-  private Cache<String, Activities> userCache;
+  private final Cache<String, Activities> userCache;
 }
