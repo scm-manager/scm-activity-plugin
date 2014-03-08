@@ -35,12 +35,22 @@ package sonia.scm.activity;
 
 import sonia.scm.collect.LimitedSortedSet;
 
+//~--- JDK imports ------------------------------------------------------------
+
+import java.io.Serializable;
+
 /**
  *
  * @author Sebastian Sdorra
  */
 public class ActivitySet extends LimitedSortedSet<Activity>
+  implements Serializable
 {
+
+  /** Field description */
+  private static final long serialVersionUID = -8798249502056285320L;
+
+  //~--- constructors ---------------------------------------------------------
 
   /**
    * Constructs ...
