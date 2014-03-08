@@ -36,7 +36,6 @@
   <cache
     name="sonia.cache.activity.repository"
     maximumSize="500"
-    copyStrategy="read-write"
   />
   
   <cache

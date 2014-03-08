@@ -37,17 +37,15 @@
         name="sonia.cache.activity.repository"
         maxEntriesLocalHeap="500"
         eternal="true"
-        overflowToDisk="true"
+        overflowToDisk="false"
         diskPersistent="false"
-        copyOnRead="true"
-        copyOnWrite="true"
   />
   
   <cache
         name="sonia.cache.activity.user"
         maxEntriesLocalHeap="100"
         eternal="true"
-        overflowToDisk="true"
+        overflowToDisk="false"
         diskPersistent="false"
   />
   
