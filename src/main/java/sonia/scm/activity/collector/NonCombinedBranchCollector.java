@@ -70,8 +70,6 @@ public class NonCombinedBranchCollector extends AbstractChangesetCollector
    * Constructs ...
    *
    *
-   * @param activityCache
-   *
    * @param activitiesCache
    */
   public NonCombinedBranchCollector(Cache<String, ActivitySet> activitiesCache)
@@ -216,5 +214,5 @@ public class NonCombinedBranchCollector extends AbstractChangesetCollector
   //~--- fields ---------------------------------------------------------------
 
   /** Field description */
-  private Cache<String, ActivitySet> activitiesCache;
+  private final Cache<String, ActivitySet> activitiesCache;
 }
