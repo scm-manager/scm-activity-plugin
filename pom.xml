@@ -37,6 +37,22 @@
       <artifactId>rome</artifactId>
       <version>1.0.0</version>  
     </dependency>
+    
+    <!-- test scope -->
+    
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>${powermock.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>${powermock.version}</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
   
@@ -49,5 +65,9 @@
     </repository>
   
   </repositories>
+  
+  <properties>
+    <powermock.version>1.5.3</powermock.version>
+  </properties>
 
 </project>

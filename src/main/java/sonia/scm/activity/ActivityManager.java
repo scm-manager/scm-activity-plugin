@@ -35,10 +35,12 @@ package sonia.scm.activity;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -67,6 +69,7 @@ import sonia.scm.security.StoredAssignedPermissionEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 /**
  *
@@ -197,49 +200,6 @@ public class ActivityManager
     return activities;
   }
 
-  //~--- methods --------------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   *
-   * @param activityList
-   * @param repository
-   * @param pageSize
-   */
-  private void appendActivities(Set<Activity> activityList,
-    Repository repository, int pageSize)
-  {
-    ChangesetCollector collector =
-      ChangesetCollectorFactory.createCollector(repository, repositoryCache);
-
-    if (logger.isDebugEnabled())
-    {
-      logger.debug("collect changesets for repository {} with collector {}",
-        repository.getName(), collector.getClass());
-    }
-
-    collector.collectChangesets(repositoryServiceFactory, activityList,
-      repository, pageSize);
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param repository
-   */
-  private void clearCaches(Repository repository)
-  {
-    logger.debug("clear caches beacause repository {} has changed",
-      repository.getId());
-    userCache.clear();
-    repositoryCache.remove(repository.getId());
-  }
-
-  //~--- get methods ----------------------------------------------------------
-
   /**
    * Method description
    *
@@ -248,7 +208,8 @@ public class ActivityManager
    *
    * @return
    */
-  private Activities getActivities(int pageSize)
+  @VisibleForTesting
+  Activities getActivities(int pageSize)
   {
     Set<Activity> activitySet = Sets.newHashSet();
     Collection<Repository> repositories = repositoryManager.getAll();
@@ -269,7 +230,76 @@ public class ActivityManager
     return new Activities(activityList);
   }
 
+  //~--- methods --------------------------------------------------------------
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   *
+   * @return
+   */
+  @VisibleForTesting
+  protected ChangesetCollector createCollector(Repository repository)
+  {
+    return ChangesetCollectorFactory.createCollector(repository,
+      repositoryCache);
+  }
+
+  /**
+   * Method description
+   *
+   *
+   *
+   * @param activityList
+   * @param repository
+   * @param pageSize
+   */
+  private void appendActivities(Set<Activity> activityList,
+    Repository repository, int pageSize)
+  {
+    Lock lock = locks.get(repository.getId());
+
+    ChangesetCollector collector = createCollector(repository);
+
+    try
+    {
+      lock.lock();
+
+      if (logger.isDebugEnabled())
+      {
+        logger.debug("collect changesets for repository {} with collector {}",
+          repository.getName(), collector.getClass());
+      }
+
+      collector.collectChangesets(repositoryServiceFactory, activityList,
+        repository, pageSize);
+    }
+    finally
+    {
+      lock.unlock();
+    }
+  }
+
+  /**
+   * Method description
+   *
+   *
+   * @param repository
+   */
+  private void clearCaches(Repository repository)
+  {
+    logger.debug("clear caches beacause repository {} has changed",
+      repository.getId());
+    userCache.clear();
+    repositoryCache.remove(repository.getId());
+  }
+
   //~--- fields ---------------------------------------------------------------
+
+  /** Field description */
+  private final Striped<Lock> locks = Striped.lazyWeakLock(10);
 
   /** Field description */
   private final Cache<String, ActivitySet> repositoryCache;
