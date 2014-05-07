@@ -35,6 +35,9 @@ package sonia.scm.activity;
 
 import com.google.inject.Inject;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +61,9 @@ public class CacheWarmUpListener implements ServletContextListener
   /** Field description */
   private static final String PROPERTY_DISABLE =
     "sonia.scm.activity.disable-warmup";
+
+  /** Field description */
+  private static final String THREADNAME = "ActivityCacheWarmUp";
 
   /**
    * the logger for CacheWarmUpListener
@@ -147,7 +153,18 @@ public class CacheWarmUpListener implements ServletContextListener
     @Override
     public void run()
     {
-      activityManager.getLatestActivity(ActivityResource.PAGE_SIZE);
+      Subject subject = SecurityUtils.getSubject();
+      Runnable runnable = subject.associateWith(new Runnable()
+      {
+
+        @Override
+        public void run()
+        {
+          activityManager.getLatestActivity(ActivityResource.PAGE_SIZE);
+        }
+      });
+
+      new Thread(runnable, THREADNAME).start();
     }
 
     //~--- fields -------------------------------------------------------------
