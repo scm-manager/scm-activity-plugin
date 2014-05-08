@@ -111,7 +111,7 @@ public abstract class AbstractChangesetCollector implements ChangesetCollector
     catch (Exception ex)
     {
       logger.error(
-        "could retrieve changesets for repository ".concat(
+        "could not retrieve changesets for repository ".concat(
           repository.getName()), ex);
     }
     finally
