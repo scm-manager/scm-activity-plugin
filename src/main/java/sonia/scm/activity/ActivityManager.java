@@ -42,13 +42,10 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.EagerSingleton;
 import sonia.scm.SCMContext;
 import sonia.scm.activity.collector.ChangesetCollector;
@@ -61,15 +58,14 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
-import sonia.scm.security.AssignedPermissionEvent;
 import sonia.scm.security.Role;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  *
@@ -136,12 +132,12 @@ public class ActivityManager
    *
    * @param event
    */
-  @Subscribe
-  public void onEvent(AssignedPermissionEvent event)
-  {
-    logger.info("clear user cache, because a global permission has changed");
-    userCache.clear();
-  }
+//  @Subscribe
+//  public void onEvent(AssignedPermissionEvent event)
+//  {
+//    logger.info("clear user cache, because a global permission has changed");
+//    userCache.clear();
+//  }
 
   /**
    * Method description
