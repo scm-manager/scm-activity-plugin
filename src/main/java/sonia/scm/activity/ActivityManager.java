@@ -35,14 +35,13 @@ package sonia.scm.activity;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.github.legman.Subscribe;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -50,19 +49,20 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sonia.scm.EagerSingleton;
 import sonia.scm.SCMContext;
 import sonia.scm.activity.collector.ChangesetCollector;
 import sonia.scm.activity.collector.ChangesetCollectorFactory;
 import sonia.scm.cache.Cache;
 import sonia.scm.cache.CacheManager;
-import sonia.scm.event.Subscriber;
+import sonia.scm.plugin.Extension;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryEvent;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
+import sonia.scm.security.AssignedPermissionEvent;
 import sonia.scm.security.Role;
-import sonia.scm.security.StoredAssignedPermissionEvent;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -75,8 +75,8 @@ import java.util.concurrent.locks.Lock;
  *
  * @author Sebastian Sdorra
  */
-@Singleton
-@Subscriber
+@Extension
+@EagerSingleton
 public class ActivityManager
 {
 
@@ -110,10 +110,8 @@ public class ActivityManager
     RepositoryServiceFactory repositoryServiceFactory,
     RepositoryManager repositoryManager)
   {
-    this.userCache = cacheManager.getCache(String.class, Activities.class,
-      CACHE_USER);
-    this.repositoryCache = cacheManager.getCache(String.class,
-      ActivitySet.class, CACHE_REPOSITORY);
+    this.userCache = cacheManager.getCache(CACHE_USER);
+    this.repositoryCache = cacheManager.getCache(CACHE_REPOSITORY);
     this.repositoryServiceFactory = repositoryServiceFactory;
     this.repositoryManager = repositoryManager;
   }
@@ -139,7 +137,7 @@ public class ActivityManager
    * @param event
    */
   @Subscribe
-  public void onEvent(StoredAssignedPermissionEvent event)
+  public void onEvent(AssignedPermissionEvent event)
   {
     logger.info("clear user cache, because a global permission has changed");
     userCache.clear();

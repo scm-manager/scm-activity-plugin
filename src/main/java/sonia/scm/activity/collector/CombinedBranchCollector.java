@@ -38,7 +38,6 @@ package sonia.scm.activity.collector;
 import sonia.scm.activity.Activity;
 import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.api.RepositoryService;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -67,12 +66,11 @@ public class CombinedBranchCollector extends AbstractChangesetCollector
    * @param pageSize
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   @Override
   protected void collectChangesets(RepositoryService repositoryService,
     Set<Activity> activitySet, Repository repository, int pageSize)
-    throws IOException, RepositoryException
+    throws IOException
   {
     ChangesetPagingResult cpr =
       repositoryService.getLogCommand().setPagingLimit(

@@ -39,8 +39,6 @@ import com.google.inject.Inject;
 
 import sonia.scm.config.ScmConfiguration;
 import sonia.scm.repository.Changeset;
-import sonia.scm.url.RepositoryUrlProvider;
-import sonia.scm.url.UrlProviderFactory;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -267,12 +265,14 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<Activities>
    */
   private String createLink(Activity activity)
   {
-    RepositoryUrlProvider repoProvider =
-      UrlProviderFactory.createUrlProvider(configuration.getBaseUrl(),
-        UrlProviderFactory.TYPE_WUI).getRepositoryUrlProvider();
-
-    return repoProvider.getDiffUrl(activity.getRepositoryId(),
-                                   activity.getChangeset().getId());
+//    RepositoryUrlProvider repoProvider =
+//      UrlProviderFactory.createUrlProvider(configuration.getBaseUrl(),
+//        UrlProviderFactory.TYPE_WUI).getRepositoryUrlProvider();
+//
+//    return repoProvider.getDiffUrl(activity.getRepositoryId(),
+//                                   activity.getChangeset().getId());
+    // TODO replace with DTO
+    return null;
   }
 
   //~--- fields ---------------------------------------------------------------

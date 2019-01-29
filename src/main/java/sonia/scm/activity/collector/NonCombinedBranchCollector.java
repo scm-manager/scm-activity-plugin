@@ -46,7 +46,6 @@ import sonia.scm.repository.Branches;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.api.LogCommandBuilder;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
@@ -117,12 +116,11 @@ public class NonCombinedBranchCollector extends AbstractChangesetCollector
    * @param pageSize
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   @Override
   protected void collectChangesets(RepositoryService repositoryService,
     Set<Activity> activitySet, Repository repository, int pageSize)
-    throws IOException, RepositoryException
+    throws IOException
   {
     Branches branches = repositoryService.getBranchesCommand().getBranches();
 

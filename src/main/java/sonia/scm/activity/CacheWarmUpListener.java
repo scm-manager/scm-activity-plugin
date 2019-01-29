@@ -41,7 +41,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.plugin.Extension;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
 
@@ -111,7 +111,7 @@ public class CacheWarmUpListener implements ServletContextListener
   {
     if (Boolean.getBoolean(PROPERTY_DISABLE))
     {
-      logger.warn("skip cache warm up, because the property {} is set");
+      logger.warn("skip cache warm up, because the property {} is set", PROPERTY_DISABLE);
     }
     else
     {

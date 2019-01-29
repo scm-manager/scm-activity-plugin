@@ -89,17 +89,16 @@ public class ActivityManagerConcurrentTest
     CacheManager cacheManager = mock(CacheManager.class);
     Cache cache = mock(Cache.class);
 
-    when(cacheManager.getCache(any(Class.class), any(Class.class),
-      any(String.class))).thenReturn(cache);
+    when(cacheManager.getCache(any())).thenReturn(cache);
     when(cache.get(any())).thenReturn(null);
 
     RepositoryServiceFactory rsf = mock(RepositoryServiceFactory.class);
     RepositoryManager rm = mock(RepositoryManager.class);
     List<Repository> repositories = Lists.newArrayList();
 
-    repositories.add(new Repository("1", "1", "1"));
-    repositories.add(new Repository("2", "2", "2"));
-    repositories.add(new Repository("3", "3", "3"));
+//    repositories.add(new Repository("1", "1", "1"));
+//    repositories.add(new Repository("2", "2", "2"));
+//    repositories.add(new Repository("3", "3", "3"));
 
     final Map<String, ChangesetCollector> collectors = Maps.newHashMap();
 

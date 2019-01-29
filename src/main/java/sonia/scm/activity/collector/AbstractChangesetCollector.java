@@ -34,25 +34,20 @@ package sonia.scm.activity.collector;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.common.io.Closeables;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sonia.scm.activity.Activity;
 import sonia.scm.repository.Changeset;
 import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryException;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Set;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  *
@@ -79,12 +74,11 @@ public abstract class AbstractChangesetCollector implements ChangesetCollector
    * @param pageSize
    *
    * @throws IOException
-   * @throws RepositoryException
    */
   protected abstract void collectChangesets(
     RepositoryService repositoryService, Set<Activity> activitySet,
     Repository repository, int pageSize)
-    throws IOException, RepositoryException;
+    throws IOException;
 
   /**
    * Method description
@@ -100,12 +94,8 @@ public abstract class AbstractChangesetCollector implements ChangesetCollector
     RepositoryServiceFactory repositoryServiceFactory,
     Set<Activity> activitySet, Repository repository, int pageSize)
   {
-    RepositoryService repositoryService = null;
-
-    try
+    try(RepositoryService repositoryService = repositoryServiceFactory.create(repository))
     {
-      repositoryService = repositoryServiceFactory.create(repository);
-
       collectChangesets(repositoryService, activitySet, repository, pageSize);
     }
     catch (Exception ex)
@@ -113,10 +103,6 @@ public abstract class AbstractChangesetCollector implements ChangesetCollector
       logger.error(
         "could not retrieve changesets for repository ".concat(
           repository.getName()), ex);
-    }
-    finally
-    {
-      Closeables.closeQuietly(repositoryService);
     }
   }
 
