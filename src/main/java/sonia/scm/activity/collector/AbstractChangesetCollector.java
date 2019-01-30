@@ -123,9 +123,15 @@ public abstract class AbstractChangesetCollector implements ChangesetCollector
 
       if (changesetList != null)
       {
-        for (Changeset c : changesetList)
+        for (Changeset changeset : changesetList)
         {
-          activitySet.add(new Activity(repository, c));
+          Activity activity = new Activity();
+          activity.setChangeset(changeset);
+          activity.setRepositoryId(repository.getId());
+          activity.setRepositoryName(repository.getName());
+          activity.setRepositoryNamespace(repository.getNamespace());
+          activity.setRepositoryType(repository.getType());
+          activitySet.add(activity);
         }
       }
     }

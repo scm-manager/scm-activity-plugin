@@ -36,25 +36,16 @@ package sonia.scm.activity;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
 import sonia.scm.activity.collector.ChangesetCollector;
 import sonia.scm.cache.Cache;
 import sonia.scm.cache.CacheManager;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
-
-import static org.junit.Assert.*;
-
-import static org.mockito.Mockito.*;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 import java.util.Map;
@@ -65,13 +56,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+//~--- JDK imports ------------------------------------------------------------
+
 /**
  *
  * @author Sebastian Sdorra
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(RepositoryServiceFactory.class)
-public class ActivityManagerConcurrentTest
+public class RepositoryActivitiesManagerConcurrentTest
 {
 
   /**
@@ -96,9 +94,9 @@ public class ActivityManagerConcurrentTest
     RepositoryManager rm = mock(RepositoryManager.class);
     List<Repository> repositories = Lists.newArrayList();
 
-//    repositories.add(new Repository("1", "1", "1"));
-//    repositories.add(new Repository("2", "2", "2"));
-//    repositories.add(new Repository("3", "3", "3"));
+    repositories.add(new Repository("1", "git","1", "1"));
+    repositories.add(new Repository("2", "git","2", "2"));
+    repositories.add(new Repository("3", "git","3", "3"));
 
     final Map<String, ChangesetCollector> collectors = Maps.newHashMap();
 
