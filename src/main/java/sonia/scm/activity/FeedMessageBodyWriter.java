@@ -97,6 +97,7 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<ActivitiesDto> {
 
   /** Field description */
   public static final String TYPE_RSS = "rss_2.0";
+
   public static final String CHANGESET_UI_LINK_TEMPLATE = "{0}/repo/{1}/{2}/changeset/{3}";
 
   //~--- constructors ---------------------------------------------------------
