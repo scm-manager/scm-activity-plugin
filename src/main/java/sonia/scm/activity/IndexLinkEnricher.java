@@ -1,5 +1,6 @@
 package sonia.scm.activity;
 
+import org.apache.shiro.SecurityUtils;
 import sonia.scm.activity.api.ActivityResource;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.Index;
@@ -26,8 +27,10 @@ public class IndexLinkEnricher implements LinkEnricher {
 
   @Override
   public void enrich(LinkEnricherContext context, LinkAppender appender) {
-    LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStoreProvider.get().get(), ActivityResource.class);
-    String href = linkBuilder.method("getLatestActivity").parameters().href();
-    appender.appendOne("activity", href);
+    if (SecurityUtils.getSubject().isAuthenticated()) {
+      LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStoreProvider.get().get(), ActivityResource.class);
+      String href = linkBuilder.method("getLatestActivity").parameters().href();
+      appender.appendOne("activity", href);
+    }
   }
 }

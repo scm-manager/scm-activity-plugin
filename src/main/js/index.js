@@ -2,41 +2,50 @@
 
 import React from "react";
 import {binder} from "@scm-manager/ui-extensions";
-import {PrimaryNavigationLink} from "@scm-manager/ui-components";
-import {Route} from "react-router-dom";
+import { ProtectedRoute } from "@scm-manager/ui-components";
+import {Redirect, Route} from "react-router-dom";
+import type { Links } from "@scm-manager/ui-types";
 import Activity from "./Activity";
+import ActivityNavigation from "./ActivityNavigation";
+
+type RouteProps = {
+  authenticated?: boolean,
+  links: Links
+};
 
 const predicate = (props: Object) => {
   return props.links && props.links.activity;
 };
 
-const ActivityRoute = ({authenticated, links}) => {
+const ActivityRoute = ({authenticated, links} : RouteProps) => {
   return (
-    <Route
-      path={"/activity"}
-      render={() => <Activity activityUrl={links.activity.href}  />}
-    />
+    <>
+      <ProtectedRoute
+        path="/activities"
+        component={() => <Activity activityUrl={links.activity.href}/>}
+        authenticated={authenticated && links.activity.href}
+      />
+
+      <ProtectedRoute
+        path="/activity"
+        component={() => <Activity activityUrl={links.activity.href}/>}
+        authenticated={authenticated && links.activity.href}
+      />
+    </>
   );
 };
 
-binder.bind(
-  "main.route",
-  ActivityRoute,
-  predicate);
-
-const ActivityNavLink = () => {
-  return (
-    <PrimaryNavigationLink
-      to={"/activity"}
-      match={"/activity"}
-      label={"Activity"}
-      key={"activity"}
-    />
-  );
-};
+binder.bind("main.route", ActivityRoute);
 
 binder.bind(
   "primary-navigation.first-menu",
-  ActivityNavLink,
+  ActivityNavigation,
   predicate
 );
+
+const ActivityRedirectRoute = (props : RouteProps) => {
+  return (
+    <Redirect exact path="/" to="/activity"/>
+  );
+};
+binder.bind("redirect-route", ActivityRedirectRoute, predicate);
