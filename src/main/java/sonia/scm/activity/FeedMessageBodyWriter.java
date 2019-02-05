@@ -139,7 +139,7 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<ActivitiesDto> {
                       Annotation[] annotations, MediaType mediaType,
                       MultivaluedMap<String, Object> httpHeaders,
                       OutputStream entityStream)
-    throws IOException, WebApplicationException {
+    throws IOException {
     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader(pluginLoader.getUberClassLoader());
@@ -157,7 +157,7 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<ActivitiesDto> {
       feed.setLink(configuration.getBaseUrl());
       feed.setDescription(DESCRIPTION.concat(configuration.getBaseUrl()));
 
-      List<SyndEntry> entries = new ArrayList<SyndEntry>();
+      List<SyndEntry> entries = new ArrayList<>();
       List<ActivityDto> activityList = activities.getActivities();
 
       for (ActivityDto activity : activityList) {

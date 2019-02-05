@@ -185,6 +185,7 @@ public class RepositoryActivitiesManagerConcurrentTest
      * @param pageSize
      */
     @Override
+    @SuppressWarnings("squid:S2925")
     public void collectChangesets(
       RepositoryServiceFactory repositoryServiceFactory,
       Set<Activity> activityList, Repository repository, int pageSize)
