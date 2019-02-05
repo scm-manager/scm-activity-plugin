@@ -38,9 +38,6 @@
     <scm-version>2</scm-version>
     <author>Sebastian Sdorra</author>
     <url>https://bitbucket.org/scm-manager/scm-activity-plugin</url>
-    <screenshots>
-      <screenshot>http://download.scm-manager.org/images/scm-activity-plugin/screenshot-1.png</screenshot>
-    </screenshots>
   </information>
 
 </plugin>

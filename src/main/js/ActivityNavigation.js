@@ -7,7 +7,7 @@ const ActivityNavigation = ({ t }) => {
   return (
     <PrimaryNavigationLink
       to={"/activity"}
-      match="/(activity|activities)"
+      match="/activity"
       label={t("scm-activity-plugin.primary-navigation")}
       key="activity"
     />
