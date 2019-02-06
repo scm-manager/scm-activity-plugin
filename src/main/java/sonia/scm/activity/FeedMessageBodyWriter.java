@@ -165,7 +165,7 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<ActivitiesDto> {
         ChangesetDto changeset = activity.extractChangeset();
         Instant changesetDate = changeset.getDate();
 
-        entry.setAuthor(changeset.getAuthor().getName());
+        entry.setAuthor(changeset.getAuthor() == null? "": changeset.getAuthor().getName());
         entry.setTitle(changeset.getDescription());
         Date date = Date.from(changesetDate);
         entry.setPublishedDate(date);
