@@ -38,8 +38,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import sonia.scm.activity.collector.ChangesetCollector;
 import sonia.scm.cache.Cache;
 import sonia.scm.cache.CacheManager;
@@ -67,8 +66,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Sebastian Sdorra
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(RepositoryServiceFactory.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RepositoryActivitiesManagerConcurrentTest
 {
 
