@@ -132,19 +132,6 @@ public class ActivityManager
    *
    * @param event
    */
-//  @Subscribe
-//  public void onEvent(AssignedPermissionEvent event)
-//  {
-//    logger.info("clear user cache, because a global permission has changed");
-//    userCache.clear();
-//  }
-
-  /**
-   * Method description
-   *
-   *
-   * @param event
-   */
   @Subscribe
   public void onEvent(RepositoryEvent event)
   {
