@@ -35,24 +35,9 @@
 <plugin>
 
   <information>
+    <scm-version>2</scm-version>
     <author>Sebastian Sdorra</author>
-    <screenshots>
-      <screenshot>http://download.scm-manager.org/images/scm-activity-plugin/screenshot-1.png</screenshot>
-    </screenshots>
+    <url>https://bitbucket.org/scm-manager/scm-activity-plugin</url>
   </information>
-  
-  <conditions>
-    <min-version>${project.parent.version}</min-version>
-  </conditions>
-  
-  <packages>
-    <package>sonia.scm.activity</package>
-  </packages>
-  
-  <resources>
-    <script>/sonia/scm/activity/sonia.activity.js</script>
-    <script>/sonia/scm/activity/sonia.activity.activitygrid.js</script>
-    <script>/sonia/scm/activity/sonia.activity.activityviewerpanel.js</script>
-  </resources>
 
 </plugin>

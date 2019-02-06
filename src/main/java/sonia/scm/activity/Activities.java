@@ -126,15 +126,7 @@ public class Activities implements Serializable
    *
    * @return
    */
-  @Override
-  public String toString()
-  {
-    //J-
-    return Objects.toStringHelper(this)
-                  .add("activities", activities)
-                  .toString();
-    //J+
-  }
+
 
   //~--- get methods ----------------------------------------------------------
 

@@ -36,25 +36,15 @@ package sonia.scm.activity;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
+import org.mockito.junit.MockitoJUnitRunner;
 import sonia.scm.activity.collector.ChangesetCollector;
 import sonia.scm.cache.Cache;
 import sonia.scm.cache.CacheManager;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.api.RepositoryServiceFactory;
-
-import static org.junit.Assert.*;
-
-import static org.mockito.Mockito.*;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 import java.util.Map;
@@ -65,13 +55,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+//~--- JDK imports ------------------------------------------------------------
+
 /**
  *
  * @author Sebastian Sdorra
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(RepositoryServiceFactory.class)
-public class ActivityManagerConcurrentTest
+@RunWith(MockitoJUnitRunner.class)
+public class RepositoryActivitiesManagerConcurrentTest
 {
 
   /**
@@ -89,17 +85,16 @@ public class ActivityManagerConcurrentTest
     CacheManager cacheManager = mock(CacheManager.class);
     Cache cache = mock(Cache.class);
 
-    when(cacheManager.getCache(any(Class.class), any(Class.class),
-      any(String.class))).thenReturn(cache);
+    when(cacheManager.getCache(any())).thenReturn(cache);
     when(cache.get(any())).thenReturn(null);
 
     RepositoryServiceFactory rsf = mock(RepositoryServiceFactory.class);
     RepositoryManager rm = mock(RepositoryManager.class);
     List<Repository> repositories = Lists.newArrayList();
 
-    repositories.add(new Repository("1", "1", "1"));
-    repositories.add(new Repository("2", "2", "2"));
-    repositories.add(new Repository("3", "3", "3"));
+    repositories.add(new Repository("1", "git","1", "1"));
+    repositories.add(new Repository("2", "git","2", "2"));
+    repositories.add(new Repository("3", "git","3", "3"));
 
     final Map<String, ChangesetCollector> collectors = Maps.newHashMap();
 
@@ -188,6 +183,7 @@ public class ActivityManagerConcurrentTest
      * @param pageSize
      */
     @Override
+    @SuppressWarnings("squid:S2925")
     public void collectChangesets(
       RepositoryServiceFactory repositoryServiceFactory,
       Set<Activity> activityList, Repository repository, int pageSize)

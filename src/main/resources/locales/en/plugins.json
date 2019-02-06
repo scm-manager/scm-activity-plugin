@@ -1,0 +1,14 @@
+{
+  "scm-activity-plugin": {
+    "root-page": {
+      "title": "Activities",
+      "subtitle": "Last repository activities"
+    },
+    "notification":{
+      "empty-list" : "No activities available!"
+    },
+    "changeset-plural": "Changesets",
+    "changeset-singular":  "Changeset",
+    "primary-navigation": "Activity"
+  }
+}

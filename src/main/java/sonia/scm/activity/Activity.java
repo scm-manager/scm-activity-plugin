@@ -1,19 +1,19 @@
 /**
  * Copyright (c) 2010, Sebastian Sdorra
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * <p>
  * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
+ * this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 3. Neither the name of SCM-Manager; nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
+ * contributors may be used to endorse or promote products derived from this
+ * software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,224 +24,50 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * <p>
  * http://bitbucket.org/sdorra/scm-manager
- *
  */
-
 
 
 package sonia.scm.activity;
 
-//~--- non-JDK imports --------------------------------------------------------
-
-import com.google.common.base.Objects;
-import com.google.common.base.Strings;
-
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import sonia.scm.repository.Changeset;
-import sonia.scm.repository.Repository;
-import sonia.scm.util.Util;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 /**
  *
  * @author Sebastian Sdorra
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 @XmlRootElement(name = "activity")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Activity implements Serializable
-{
+public class Activity implements Serializable {
 
-  /** Field description */
-  private static final long serialVersionUID = -1127284739982493951L;
 
-  //~--- constructors ---------------------------------------------------------
-
-  /**
-   * Constructs ...
-   *
-   */
-  public Activity() {}
-
-  /**
-   * Constructs ...
-   *
-   *
-   * @param repository
-   * @param changeset
-   */
-  public Activity(Repository repository, Changeset changeset)
-  {
-    this.repositoryId = repository.getId();
-    this.repositoryName = repository.getName();
-    this.repositoryType = repository.getType();
-    this.changeset = changeset;
-  }
-
-  /**
-   * Constructs ...
-   *
-   *
-   *
-   * @param repositoryId
-   * @param repositoryName
-   * @param repositoryType
-   * @param changeset
-   */
-  public Activity(String repositoryId, String repositoryName,
-    String repositoryType, Changeset changeset)
-  {
-    this.repositoryId = repositoryId;
-    this.repositoryName = repositoryName;
-    this.changeset = changeset;
-  }
-
-  //~--- methods --------------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @param obj
-   *
-   * @return
-   */
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (obj == null)
-    {
-      return false;
-    }
-
-    if (getClass() != obj.getClass())
-    {
-      return false;
-    }
-
-    final Activity other = (Activity) obj;
-
-    return Objects.equal(repositoryId, other.repositoryId)
-      && Objects.equal(getChangesetId(), other.getChangesetId());
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  @Override
-  public int hashCode()
-  {
-    return Objects.hashCode(repositoryId, getChangesetId());
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  @Override
-  public String toString()
-  {
-    //J-
-    return Objects.toStringHelper(this)
-                  .add("repositoryId", repositoryId)
-                  .add("repositoryType", repositoryType)
-                  .add("repositoryName", repositoryName)
-                  .add("changeset", changeset)
-                  .toString();
-    //J+
-  }
-
-  //~--- get methods ----------------------------------------------------------
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  public Changeset getChangeset()
-  {
-    return changeset;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  public String getRepositoryId()
-  {
-    return repositoryId;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  public String getRepositoryName()
-  {
-    return repositoryName;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  public String getRepositoryType()
-  {
-    return repositoryType;
-  }
-
-  /**
-   * Method description
-   *
-   *
-   * @return
-   */
-  private String getChangesetId()
-  {
-    String id = Util.EMPTY_STRING;
-
-    if (changeset != null)
-    {
-      id = changeset.getId();
-    }
-
-    return Strings.nullToEmpty(id);
-  }
-
-  //~--- fields ---------------------------------------------------------------
-
-  /** Field description */
-  private Changeset changeset;
-
-  /** Field description */
   @XmlElement(name = "repository-id")
   private String repositoryId;
 
-  /** Field description */
   @XmlElement(name = "repository-name")
   private String repositoryName;
 
-  /** Field description */
+  @XmlElement(name = "repository-namespace")
+  private String repositoryNamespace;
+
   @XmlElement(name = "repository-type")
   private String repositoryType;
+  private Changeset changeset;
 }
