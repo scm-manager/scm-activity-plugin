@@ -70,7 +70,7 @@ class Activity extends React.Component<Props, State> {
           groups[groupName] = group;
           result.push(group);
         }
-        group.changesets.push(activity.changeset);
+        group.changesets.push(activity._embedded.changeset);
       }
     }
     return result;

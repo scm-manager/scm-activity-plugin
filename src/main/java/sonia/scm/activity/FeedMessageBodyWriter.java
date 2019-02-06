@@ -162,7 +162,7 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<ActivitiesDto> {
 
       for (ActivityDto activity : activityList) {
         SyndEntry entry = new SyndEntryImpl();
-        ChangesetDto changeset = activity.getChangeset();
+        ChangesetDto changeset = activity.extractChangeset();
         Instant changesetDate = changeset.getDate();
 
         entry.setAuthor(changeset.getAuthor().getName());
@@ -247,7 +247,7 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<ActivitiesDto> {
     content.setType(MEDIA_TYPE_HTML);
     content.setValue(MessageFormat.format(DESCRIPTION_TEMPLATE,
             activity.getRepositoryName(), activity.getRepositoryType(),
-            activity.getChangeset().getDescription()));
+            activity.extractChangeset().getDescription()));
 
     return content;
   }
@@ -265,7 +265,7 @@ public class FeedMessageBodyWriter implements MessageBodyWriter<ActivitiesDto> {
       configuration.getBaseUrl(),
       activity.getRepositoryNamespace(),
       activity.getRepositoryName(),
-      activity.getChangeset().getId());
+      activity.extractChangeset().getId());
   }
 
   //~--- fields ---------------------------------------------------------------
