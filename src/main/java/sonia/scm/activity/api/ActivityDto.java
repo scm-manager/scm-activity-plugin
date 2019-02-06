@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuppressWarnings("squid:S2160") // No semantics for equals here
 public class ActivityDto extends HalRepresentation {
 
   private String repositoryName;
