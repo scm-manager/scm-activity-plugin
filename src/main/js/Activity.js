@@ -51,12 +51,14 @@ class Activity extends React.Component<Props, State> {
   groupByRepo(activities: Activities): ActivityGroup[] {
     let result: ActivityGroup[] = [];
     let groups = [];
+    let lastGroupName ="";
     if (activities && activities.activities) {
       for (let activity of activities.activities) {
         const groupName =
           activity.repositoryNamespace + "/" + activity.repositoryName;
         let group = groups[groupName];
-        if (!group) {
+        if (groupName !== lastGroupName) {
+          lastGroupName = groupName;
           let repository: Repository = {
             namespace: activity.repositoryNamespace,
             name: activity.repositoryName,
