@@ -19,7 +19,6 @@ type Props = {
 class ActivityRoute extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
-    this.renderActivity = this.renderActivity.bind(this);
   }
 
   renderActivity = () => {
