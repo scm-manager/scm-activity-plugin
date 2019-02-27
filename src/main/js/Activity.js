@@ -51,7 +51,7 @@ class Activity extends React.Component<Props, State> {
   groupByRepo(activities: Activities): ActivityGroup[] {
     let result: ActivityGroup[] = [];
     let groups = [];
-    let lastGroupName ="";
+    let lastGroupName = "";
     if (activities && activities.activities) {
       for (let activity of activities.activities) {
         const groupName =
@@ -80,7 +80,7 @@ class Activity extends React.Component<Props, State> {
 
   getBody() {
     const { t } = this.props;
-    const { activities } = this.state;
+    const { activities, error } = this.state;
     if (
       activities &&
       activities.activities &&
@@ -89,6 +89,8 @@ class Activity extends React.Component<Props, State> {
       return this.groupByRepo(activities).map(group => {
         return <ActivityGroupEntry group={group} />;
       });
+    } else if (error) {
+      return "";
     } else {
       return (
         <Notification>
@@ -106,14 +108,11 @@ class Activity extends React.Component<Props, State> {
       return <Loading />;
     }
 
-    if (error) {
-      return <ErrorNotification error={error.message} />;
-    }
-
     return (
       <Page
         title={t("scm-activity-plugin.root-page.title")}
         subtitle={t("scm-activity-plugin.root-page.subtitle")}
+        error={error}
       >
         {this.getBody()}
       </Page>

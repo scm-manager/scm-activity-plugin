@@ -28,12 +28,15 @@ class ActivityRoute extends React.Component<Props> {
 
   render() {
     const { authenticated, links } = this.props;
-
+    let auth = authenticated;
+    if (links && links.activity && links.activity.href){
+      auth = true;
+    }
     return (
       <ProtectedRoute
         path="/activity"
         component={this.renderActivity}
-        authenticated={authenticated && links.activity.href}
+        authenticated={auth}
       />
     );
   }
