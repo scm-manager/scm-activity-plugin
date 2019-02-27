@@ -23,7 +23,11 @@ class ActivityRoute extends React.Component<Props> {
 
   renderActivity = () => {
     const { links } = this.props;
-    return <Activity activityUrl={links.activity.href} />;
+    let link = null;
+    if (links && links.activity && links.activity.href) {
+      link = links.activity.href;
+    }
+    return <Activity activityUrl={link}/>;
   };
 
   render() {

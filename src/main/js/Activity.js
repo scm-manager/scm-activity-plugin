@@ -33,19 +33,21 @@ class Activity extends React.Component<Props, State> {
 
   componentDidMount(): void {
     const { activityUrl } = this.props;
-    findAll(activityUrl)
-      .then(activities => {
-        this.setState({
-          loading: false,
-          activities
+    if (activityUrl) {
+      findAll(activityUrl)
+        .then(activities => {
+          this.setState({
+            loading: false,
+            activities
+          });
+        })
+        .catch(error => {
+          this.setState({
+            loading: false,
+            error
+          });
         });
-      })
-      .catch(error => {
-        this.setState({
-          loading: false,
-          error
-        });
-      });
+    }
   }
 
   groupByRepo(activities: Activities): ActivityGroup[] {
@@ -121,4 +123,3 @@ class Activity extends React.Component<Props, State> {
 }
 
 export default withRouter(translate("plugins")(Activity));
-
