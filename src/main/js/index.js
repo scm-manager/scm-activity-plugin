@@ -7,24 +7,41 @@ import type { Links } from "@scm-manager/ui-types";
 import Activity from "./Activity";
 import ActivityNavigation from "./ActivityNavigation";
 
-type RouteProps = {
-  authenticated?: boolean,
-  links: Links
-};
-
 const predicate = (props: Object) => {
   return props.links && props.links.activity;
 };
 
-const ActivityRoute = ({ authenticated, links }: RouteProps) => {
-  return (
-    <ProtectedRoute
-      path="/activity"
-      component={() => <Activity activityUrl={links.activity.href} />}
-      authenticated={authenticated && links.activity.href}
-    />
-  );
+type Props = {
+  authenticated?: boolean,
+  links: Links
 };
+
+class ActivityRoute extends React.Component<Props> {
+  constructor(props: Props) {
+    super(props);
+  }
+
+  renderActivity = () => {
+    const { links } = this.props;
+    let link = null;
+    if (links && links.activity && links.activity.href) {
+      link = links.activity.href;
+    }
+    return <Activity activityUrl={link}/>;
+  };
+
+  render() {
+    const { authenticated, links } = this.props;
+    const activityLinkPresent = links && links.activity && links.activity.href;
+    return (
+      <ProtectedRoute
+        path="/activity"
+        component={this.renderActivity}
+        authenticated={authenticated || activityLinkPresent}
+      />
+    );
+  }
+}
 
 binder.bind("main.route", ActivityRoute);
 

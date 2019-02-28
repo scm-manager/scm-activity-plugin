@@ -33,30 +33,34 @@ class Activity extends React.Component<Props, State> {
 
   componentDidMount(): void {
     const { activityUrl } = this.props;
-    findAll(activityUrl)
-      .then(activities => {
-        this.setState({
-          loading: false,
-          activities
+    if (activityUrl) {
+      findAll(activityUrl)
+        .then(activities => {
+          this.setState({
+            loading: false,
+            activities
+          });
+        })
+        .catch(error => {
+          this.setState({
+            loading: false,
+            error
+          });
         });
-      })
-      .catch(error => {
-        this.setState({
-          loading: false,
-          error
-        });
-      });
+    }
   }
 
   groupByRepo(activities: Activities): ActivityGroup[] {
     let result: ActivityGroup[] = [];
     let groups = [];
+    let lastGroupName = "";
     if (activities && activities.activities) {
       for (let activity of activities.activities) {
         const groupName =
           activity.repositoryNamespace + "/" + activity.repositoryName;
         let group = groups[groupName];
-        if (!group) {
+        if (groupName !== lastGroupName) {
+          lastGroupName = groupName;
           let repository: Repository = {
             namespace: activity.repositoryNamespace,
             name: activity.repositoryName,
@@ -78,7 +82,7 @@ class Activity extends React.Component<Props, State> {
 
   getBody() {
     const { t } = this.props;
-    const { activities } = this.state;
+    const { activities, error } = this.state;
     if (
       activities &&
       activities.activities &&
@@ -87,6 +91,8 @@ class Activity extends React.Component<Props, State> {
       return this.groupByRepo(activities).map(group => {
         return <ActivityGroupEntry group={group} />;
       });
+    } else if (error) {
+      return "";
     } else {
       return (
         <Notification>
@@ -104,14 +110,11 @@ class Activity extends React.Component<Props, State> {
       return <Loading />;
     }
 
-    if (error) {
-      return <ErrorNotification error={error.message} />;
-    }
-
     return (
       <Page
         title={t("scm-activity-plugin.root-page.title")}
         subtitle={t("scm-activity-plugin.root-page.subtitle")}
+        error={error}
       >
         {this.getBody()}
       </Page>
@@ -120,4 +123,3 @@ class Activity extends React.Component<Props, State> {
 }
 
 export default withRouter(translate("plugins")(Activity));
-

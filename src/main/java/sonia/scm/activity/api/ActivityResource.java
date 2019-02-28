@@ -44,13 +44,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import static sonia.scm.activity.api.ActivityResource.PATH;
-
-
 /**
  * @author Sebastian Sdorra
  */
-@Path(PATH)
+@Path(ActivityResource.PATH)
 public class ActivityResource {
 
   public static final String PATH = "v2/plugins/activity";

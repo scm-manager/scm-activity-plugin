@@ -67,6 +67,8 @@ import static org.mockito.Mockito.when;
  * @author Sebastian Sdorra
  */
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("squid:S2699")
+// ignore warning of legacy code: "Tests should include assertions"
 public class RepositoryActivitiesManagerConcurrentTest
 {
 
