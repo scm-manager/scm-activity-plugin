@@ -83,9 +83,6 @@ public class ActivityManager
   /** Field description */
   public static final String CACHE_USER = "sonia.cache.activity.user";
 
-  /** Field description */
-  private static final String NAME_ADMIN = "__admin-role";
-
   /** the logger for ActivityManager */
   private static final Logger logger =
     LoggerFactory.getLogger(ActivityManager.class);
@@ -156,12 +153,7 @@ public class ActivityManager
     Subject subject = SecurityUtils.getSubject();
     String name;
 
-    // use only one cache key for all administrators
-    if (subject.hasRole(Role.ADMIN))
-    {
-      name = NAME_ADMIN;
-    }
-    else if (subject.hasRole(Role.USER))
+    if (subject.hasRole(Role.USER))
     {
       name = (String) subject.getPrincipal();
     }
