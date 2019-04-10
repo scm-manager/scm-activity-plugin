@@ -116,7 +116,7 @@ public class CacheWarmUpListener implements ServletContextListener
     }
     else
     {
-      logger.info("start cache warmp up");
+      logger.info("start cache warm up");
       adminContext.runAsAdmin(CacheWarmUpAction.class);
     }
   }
