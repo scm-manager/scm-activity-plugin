@@ -13,6 +13,7 @@
   <version>2.0.0-SNAPSHOT</version>
   <name>scm-activity-plugin</name>
   <description>Shows the latest activity from your repositories</description>
+  <url>https://github.com/scm-manager/scm-activity-plugin</url>
   <dependencies>
     <dependency>
       <groupId>net.java.dev.rome</groupId>
