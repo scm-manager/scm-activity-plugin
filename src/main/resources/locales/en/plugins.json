@@ -4,10 +4,10 @@
       "title": "Activities",
       "subtitle": "Last repository activities"
     },
-    "notification":{
-      "empty-list" : "No activities available!"
+    "notification": {
+      "empty-list": "No activities available!"
     },
-    "changeset":  "{{count}} Changeset",
+    "changeset": "{{count}} Changeset",
     "changeset_plural": "{{count}} Changesets",
     "primaryNavigation": "Activity"
   }
