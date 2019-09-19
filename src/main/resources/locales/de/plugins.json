@@ -7,8 +7,8 @@
     "notification":{
       "empty-list" : "Es sind keine Aktivitäten verfügbar!"
     },
-    "changeset-plural": "Changesets",
-    "changeset-singular":  "Changeset",
-    "primary-navigation": "Aktivitäten"
+    "changeset":  "{{count}} Changeset",
+    "changeset_plural": "{{count}} Changesets",
+    "primaryNavigation": "Aktivitäten"
   }
 }
