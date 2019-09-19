@@ -3,19 +3,21 @@ import React from "react";
 import injectSheet from "react-jss";
 import classNames from "classnames";
 import type { ActivityGroup } from "./ActivityGroup";
-import { ChangesetList } from "@scm-manager/ui-components";
+import { ChangesetList, Icon } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 
 const styles = {
-  pointer: {
-    cursor: "pointer",
+  fontSize: {
     fontSize: "1.5rem"
   },
   activityGroup: {
     marginBottom: "1em"
   },
   wrapper: {
-    padding: "0 0.75rem"
+    margin: "1rem 0 2rem",
+    padding: "1rem",
+    border: "1px solid var(--border)",
+    borderRadius: "4px"
   },
   clearfix: {
     clear: "both"
@@ -52,32 +54,33 @@ class ActivityGroupEntry extends React.Component<Props, State> {
     const { t, group, classes } = this.props;
     const { collapsed } = this.state;
 
-    const icon = collapsed ? "fa-angle-right" : "fa-angle-down";
+    const icon = collapsed ? "angle-right" : "angle-down";
     let content = null;
     if (!collapsed) {
       content = (
-        <ChangesetList
-          repository={group.repository}
-          changesets={group.changesets}
-        />
+        <div className={classes.wrapper}>
+          <ChangesetList
+            repository={group.repository}
+            changesets={group.changesets}
+          />
+        </div>
       );
     }
     return (
       <div className={classes.activityGroup}>
-        <h2>
-          <span className={classes.pointer} onClick={this.toggleCollapse}>
-            <i className={classNames("fa", icon)} />{" "}
-            {group.repository.namespace}/{group.repository.name} -{" "}
-            {group.repository.type} / ({group.changesets.length}{" "}
-            {group.changesets.length > 1
-              ? t("scm-activity-plugin.changeset-plural")
-              : t("scm-activity-plugin.changeset-singular")}
-            )
-          </span>
-        </h2>
-        <hr />
-        <div>{content}</div>
-        <div className={classes.clearfix} />
+        <h3
+          className={classNames("has-cursor-pointer", classes.fontSize)}
+          onClick={this.toggleCollapse}
+        >
+          <Icon name={icon} color="default" /> {group.repository.namespace}/
+          {group.repository.name} - {group.repository.type} / (
+          {group.changesets.length}{" "}
+          {group.changesets.length > 1
+            ? t("scm-activity-plugin.changeset-plural")
+            : t("scm-activity-plugin.changeset-singular")}
+          )
+        </h3>
+        {content}
       </div>
     );
   }
