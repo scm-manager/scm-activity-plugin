@@ -1,24 +1,26 @@
 //@flow
 import React from "react";
 import injectSheet from "react-jss";
-import classNames from "classnames";
 import type { ActivityGroup } from "./ActivityGroup";
-import { ChangesetList } from "@scm-manager/ui-components";
+import { ChangesetList, Icon } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
 
 const styles = {
-  pointer: {
-    cursor: "pointer",
-    fontSize: "1.5rem"
-  },
   activityGroup: {
     marginBottom: "1em"
   },
-  wrapper: {
-    padding: "0 0.75rem"
+  headline: {
+    fontSize: "1.25rem",
+
+    "& small": {
+      fontSize: "0.875rem"
+    }
   },
-  clearfix: {
-    clear: "both"
+  wrapper: {
+    margin: "1rem 0 2rem",
+    padding: "1rem",
+    border: "1px solid #dbdbdb", // $border
+    borderRadius: "4px"
   }
 };
 
@@ -52,32 +54,35 @@ class ActivityGroupEntry extends React.Component<Props, State> {
     const { t, group, classes } = this.props;
     const { collapsed } = this.state;
 
-    const icon = collapsed ? "fa-angle-right" : "fa-angle-down";
+    const icon = collapsed ? "angle-right" : "angle-down";
     let content = null;
     if (!collapsed) {
       content = (
-        <ChangesetList
-          repository={group.repository}
-          changesets={group.changesets}
-        />
+        <div className={classes.wrapper}>
+          <ChangesetList
+            repository={group.repository}
+            changesets={group.changesets}
+          />
+        </div>
       );
     }
+
     return (
       <div className={classes.activityGroup}>
-        <h2>
-          <span className={classes.pointer} onClick={this.toggleCollapse}>
-            <i className={classNames("fa", icon)} />{" "}
-            {group.repository.namespace}/{group.repository.name} -{" "}
-            {group.repository.type} / ({group.changesets.length}{" "}
-            {group.changesets.length > 1
-              ? t("scm-activity-plugin.changeset-plural")
-              : t("scm-activity-plugin.changeset-singular")}
-            )
-          </span>
-        </h2>
-        <hr />
-        <div>{content}</div>
-        <div className={classes.clearfix} />
+        <div className="has-cursor-pointer" onClick={this.toggleCollapse}>
+          <h3 className={classes.headline}>
+            <Icon name={icon} color="default" /> {group.repository.namespace}/
+            {group.repository.name} - {group.repository.type}{" "}
+            <small className="has-text-grey-light">
+              (
+              {t("scm-activity-plugin.changeset", {
+                count: group.changesets.length
+              })}
+              )
+            </small>
+          </h3>
+        </div>
+        {content}
       </div>
     );
   }

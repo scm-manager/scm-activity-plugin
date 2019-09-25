@@ -6,9 +6,9 @@ import { translate } from "react-i18next";
 const ActivityNavigation = ({ t }) => {
   return (
     <PrimaryNavigationLink
-      to={"/activity"}
+      to="/activity"
       match="/activity"
-      label={t("scm-activity-plugin.primary-navigation")}
+      label={t("scm-activity-plugin.primaryNavigation")}
       key="activity"
     />
   );

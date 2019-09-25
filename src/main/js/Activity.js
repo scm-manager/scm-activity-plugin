@@ -2,12 +2,7 @@
 import React from "react";
 import { translate } from "react-i18next";
 import { withRouter } from "react-router-dom";
-import {
-  ErrorNotification,
-  Loading,
-  Notification,
-  Page
-} from "@scm-manager/ui-components";
+import { Loading, Notification, Page } from "@scm-manager/ui-components";
 import { findAll } from "./api";
 import type { Activities, ActivityGroup } from "./ActivityGroup";
 import type { Changeset, Repository } from "@scm-manager/ui-types";
