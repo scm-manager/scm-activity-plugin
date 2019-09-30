@@ -77,7 +77,7 @@ class Activity extends React.Component<Props, State> {
 
   getBody() {
     const { t } = this.props;
-    const { activities, error } = this.state;
+    const { activities } = this.state;
     if (
       activities &&
       activities.activities &&
@@ -86,8 +86,6 @@ class Activity extends React.Component<Props, State> {
       return this.groupByRepo(activities).map(group => {
         return <ActivityGroupEntry group={group} />;
       });
-    } else if (error) {
-      return "";
     } else {
       return (
         <Notification>
