@@ -37,7 +37,7 @@ class ActivityRoute extends React.Component<Props> {
       <ProtectedRoute
         path="/activity"
         component={this.renderActivity}
-        authenticated={authenticated || activityLinkPresent}
+        authenticated={authenticated && activityLinkPresent}
       />
     );
   }
