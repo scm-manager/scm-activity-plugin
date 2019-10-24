@@ -1,35 +1,33 @@
 //@flow
 import React from "react";
-import injectSheet from "react-jss";
 import type { ActivityGroup } from "./ActivityGroup";
 import { ChangesetList, Icon } from "@scm-manager/ui-components";
 import { translate } from "react-i18next";
+import styled from "styled-components";
 
-const styles = {
-  activityGroup: {
-    marginBottom: "1em"
-  },
-  headline: {
-    fontSize: "1.25rem",
+const StyledActivityGroup = styled.div`
+    margin-bottom: 1rem;
+`;
 
-    "& small": {
-      fontSize: "0.875rem"
+const Headline = styled.h3`
+  font-size: 1.25rem;
+    & small {
+      font-size: 0.875rem;
     }
-  },
-  wrapper: {
-    margin: "1rem 0 2rem",
-    padding: "1rem",
-    border: "1px solid #dbdbdb", // $border
-    borderRadius: "4px"
-  }
-};
+`;
+
+const Wrapper = styled.div`
+    margin: 1rem 0 2rem;
+    padding: 1rem;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px
+`;
 
 type Props = {
   group: ActivityGroup,
 
   // context prop
-  t: string => string,
-  classes: any
+  t: string => string
 };
 
 type State = {
@@ -51,26 +49,26 @@ class ActivityGroupEntry extends React.Component<Props, State> {
   };
 
   render() {
-    const { t, group, classes } = this.props;
+    const { t, group } = this.props;
     const { collapsed } = this.state;
 
     const icon = collapsed ? "angle-right" : "angle-down";
     let content = null;
     if (!collapsed) {
       content = (
-        <div className={classes.wrapper}>
+        <Wrapper>
           <ChangesetList
             repository={group.repository}
             changesets={group.changesets}
           />
-        </div>
+        </Wrapper>
       );
     }
 
     return (
-      <div className={classes.activityGroup}>
+      <StyledActivityGroup>
         <div className="has-cursor-pointer" onClick={this.toggleCollapse}>
-          <h3 className={classes.headline}>
+          <Headline>
             <Icon name={icon} color="default" /> {group.repository.namespace}/
             {group.repository.name} - {group.repository.type}{" "}
             <small className="has-text-grey-light">
@@ -80,12 +78,12 @@ class ActivityGroupEntry extends React.Component<Props, State> {
               })}
               )
             </small>
-          </h3>
+          </Headline>
         </div>
         {content}
-      </div>
+      </StyledActivityGroup>
     );
   }
 }
 
-export default injectSheet(styles)(translate("plugins")(ActivityGroupEntry));
+export default translate("plugins")(ActivityGroupEntry);
