@@ -1,7 +1,6 @@
-// @flow
 import React from "react";
+import { withTranslation } from "react-i18next";
 import { PrimaryNavigationLink } from "@scm-manager/ui-components";
-import { translate } from "react-i18next";
 
 const ActivityNavigation = ({ t }) => {
   return (
@@ -14,4 +13,4 @@ const ActivityNavigation = ({ t }) => {
   );
 };
 
-export default translate("plugins")(ActivityNavigation);
+export default withTranslation("plugins")(ActivityNavigation);

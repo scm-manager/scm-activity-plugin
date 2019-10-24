@@ -1,33 +1,27 @@
-// @flow
-
 import React from "react";
 import { binder } from "@scm-manager/ui-extensions";
+import { Links } from "@scm-manager/ui-types";
 import { ProtectedRoute } from "@scm-manager/ui-components";
-import type { Links } from "@scm-manager/ui-types";
 import Activity from "./Activity";
 import ActivityNavigation from "./ActivityNavigation";
 
-const predicate = (props: Object) => {
+const predicate = (props: object) => {
   return props.links && props.links.activity;
 };
 
 type Props = {
-  authenticated?: boolean,
-  links: Links
+  authenticated?: boolean;
+  links: Links;
 };
 
 class ActivityRoute extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props);
-  }
-
   renderActivity = () => {
     const { links } = this.props;
     let link = null;
     if (links && links.activity && links.activity.href) {
       link = links.activity.href;
     }
-    return <Activity activityUrl={link}/>;
+    return <Activity activityUrl={link} />;
   };
 
   render() {
