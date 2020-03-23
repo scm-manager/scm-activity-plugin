@@ -81,7 +81,6 @@ public class RepositoryActivitiesManagerConcurrentTest
     Cache cache = mock(Cache.class);
 
     when(cacheManager.getCache(any())).thenReturn(cache);
-    when(cache.get(any())).thenReturn(null);
 
     RepositoryServiceFactory rsf = mock(RepositoryServiceFactory.class);
     RepositoryManager rm = mock(RepositoryManager.class);
