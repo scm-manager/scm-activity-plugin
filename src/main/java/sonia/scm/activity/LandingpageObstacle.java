@@ -24,6 +24,8 @@
 package sonia.scm.activity;
 
 import sonia.scm.plugin.Extension;
+import sonia.scm.plugin.Requires;
 
-@Extension(requires = "scm-landingpage-plugin")
+@Extension
+@Requires("scm-landingpage-plugin")
 public class LandingpageObstacle implements Obstacle {}
