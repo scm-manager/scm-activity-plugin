@@ -36,21 +36,24 @@ import sonia.scm.plugin.Extension;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.Set;
 
 @Extension
 @Enrich(Index.class)
 public class IndexLinkEnricher implements HalEnricher {
 
   private final Provider<ScmPathInfoStore> scmPathInfoStoreProvider;
+  private final Set<Obstacle> obstacles;
 
   @Inject
-  public IndexLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStoreProvider) {
+  public IndexLinkEnricher(Provider<ScmPathInfoStore> scmPathInfoStoreProvider, Set<Obstacle> obstacles) {
     this.scmPathInfoStoreProvider = scmPathInfoStoreProvider;
+    this.obstacles = obstacles;
   }
 
   @Override
   public void enrich(HalEnricherContext context, HalAppender appender) {
-    if (SecurityUtils.getSubject().isAuthenticated()) {
+    if (obstacles.isEmpty() && SecurityUtils.getSubject().isAuthenticated()) {
       LinkBuilder linkBuilder = new LinkBuilder(scmPathInfoStoreProvider.get().get(), ActivityResource.class);
       String href = linkBuilder.method("getLatestActivity").parameters().href();
       appender.appendLink("activity", href);

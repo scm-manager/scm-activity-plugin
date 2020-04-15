@@ -60,8 +60,8 @@ class ActivityRoute extends React.Component<Props> {
   }
 }
 
-binder.bind("main.route", ActivityRoute);
+binder.bind("main.route", ActivityRoute, predicate);
 
 binder.bind("primary-navigation.first-menu", ActivityNavigation, predicate);
 
-binder.bind("main.redirect", () => "/activity");
+binder.bind("main.redirect", () => "/activity", predicate);
