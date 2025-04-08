@@ -15,14 +15,14 @@
  */
 
 import React from "react";
-import { binder } from "@scm-manager/ui-extensions";
-import { Links } from "@scm-manager/ui-types";
+import { binder, extensionPoints } from "@scm-manager/ui-extensions";
+import { Link, Links } from "@scm-manager/ui-types";
 import { ProtectedRoute } from "@scm-manager/ui-components";
 import Activity from "./Activity";
 import ActivityNavigation from "./ActivityNavigation";
 
-const predicate = (props: object) => {
-  return props.links && props.links.activity;
+const predicate = (props: Props) => {
+  return props?.links && props.links.activity;
 };
 
 type Props = {
@@ -30,31 +30,19 @@ type Props = {
   links: Links;
 };
 
-class ActivityRoute extends React.Component<Props> {
-  renderActivity = () => {
-    const { links } = this.props;
-    let link = null;
-    if (links && links.activity && links.activity.href) {
-      link = links.activity.href;
-    }
-    return <Activity activityUrl={link} />;
-  };
+const ActivityRoute: React.FC<Props> = ({ authenticated, links }) => {
+  const activityUrl = (links?.activity as Link)?.href;
+  return (
+    <ProtectedRoute
+      path="/activity"
+      component={() => <Activity activityUrl={activityUrl ?? undefined} />}
+      authenticated={!!(authenticated && !!activityUrl)}
+    />
+  );
+};
 
-  render() {
-    const { authenticated, links } = this.props;
-    const activityLinkPresent = links && links.activity && links.activity.href;
-    return (
-      <ProtectedRoute
-        path="/activity"
-        component={this.renderActivity}
-        authenticated={authenticated && activityLinkPresent}
-      />
-    );
-  }
-}
+binder.bind<extensionPoints.MainRoute>("main.route", ActivityRoute, predicate);
+binder.bind<extensionPoints.PrimaryNavigationFirstMenu>("primary-navigation.first-menu", ActivityNavigation, predicate);
+binder.bind<extensionPoints.MainRedirect>("main.redirect", () => "/activity", predicate);
 
-binder.bind("main.route", ActivityRoute, predicate);
-
-binder.bind("primary-navigation.first-menu", ActivityNavigation, predicate);
-
-binder.bind("main.redirect", () => "/activity", predicate);
+export default ActivityRoute;

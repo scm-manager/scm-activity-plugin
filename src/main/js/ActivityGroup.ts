@@ -25,10 +25,15 @@ export type Activities = {
   activities: Activity[];
 };
 
+type Embedded = {
+  changeset: Changeset;
+}
+
 export type Activity = {
   changeset: Changeset;
   repositoryId: string;
   repositoryName: string;
   repositoryNamespace: string;
   repositoryType: string;
+  _embedded?: Embedded;
 };

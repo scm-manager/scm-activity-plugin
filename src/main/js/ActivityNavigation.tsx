@@ -15,10 +15,12 @@
  */
 
 import React from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { PrimaryNavigationLink } from "@scm-manager/ui-components";
 
-const ActivityNavigation = ({ t }) => {
+const ActivityNavigation: React.FC = () => {
+  const [t] = useTranslation("plugins");
+
   return (
     <PrimaryNavigationLink
       to="/activity"
@@ -29,4 +31,4 @@ const ActivityNavigation = ({ t }) => {
   );
 };
 
-export default withTranslation("plugins")(ActivityNavigation);
+export default ActivityNavigation;
