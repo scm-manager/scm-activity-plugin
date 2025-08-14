@@ -1,35 +1,25 @@
 /*
- * MIT License
+ * Copyright (c) 2020 - present Cloudogu GmbH
  *
- * Copyright (c) 2020-present Cloudogu GmbH and Contributors
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation, version 3.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import React from "react";
-import styled from "styled-components";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { ChangesetList, Icon } from "@scm-manager/ui-components";
-import { ActivityGroup } from "./ActivityGroup";
 
-const StyledActivityGroup = styled.div`
-  margin-bottom: 1rem;
-`;
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import { ChangesetList, NoStyleButton } from "@scm-manager/ui-components";
+import { Icon } from "@scm-manager/ui-core";
+import { ActivityGroup } from "./ActivityGroup";
 
 const Headline = styled.h3`
   font-size: 1.25rem;
@@ -41,65 +31,55 @@ const Headline = styled.h3`
 const Wrapper = styled.div`
   margin: 1rem 0 2rem;
   padding: 1rem;
-  border: 1px solid #dbdbdb;
-  border-radius: 4px;
+  border: var(--scm-border);
+  border-radius: 0.25rem;
 `;
 
-type Props = WithTranslation & {
+type Props = {
   group: ActivityGroup;
 };
 
-type State = {
-  collapsed: boolean;
-};
+const ActivityGroupEntry: React.FC<Props> = ({ group }) => {
+  const [t] = useTranslation("plugins");
+  const [collapsed, setCollapsed] = useState(false);
 
-class ActivityGroupEntry extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      collapsed: false
-    };
-  }
-
-  toggleCollapse = () => {
-    this.setState(prevState => ({
-      collapsed: !prevState.collapsed
-    }));
+  const toggleCollapse = () => {
+    setCollapsed(!collapsed);
   };
 
-  render() {
-    const { t, group } = this.props;
-    const { collapsed } = this.state;
+  const icon = collapsed ? "angle-right" : "angle-down";
+  const contentId = `activity-group-${group.repository.namespace}-${group.repository.name}`;
 
-    const icon = collapsed ? "angle-right" : "angle-down";
-    let content = null;
-    if (!collapsed) {
-      content = (
-        <Wrapper>
-          <ChangesetList repository={group.repository} changesets={group.changesets} />
-        </Wrapper>
-      );
-    }
-
-    return (
-      <StyledActivityGroup>
-        <div className="has-cursor-pointer" onClick={this.toggleCollapse}>
-          <Headline>
-            <Icon name={icon} color="default" /> {group.repository.namespace}/{group.repository.name} -{" "}
-            {group.repository.type}{" "}
-            <small className="has-text-grey-light">
-              (
-              {t("scm-activity-plugin.changeset", {
-                count: group.changesets.length
-              })}
-              )
-            </small>
-          </Headline>
-        </div>
-        {content}
-      </StyledActivityGroup>
+  let content = null;
+  if (!collapsed) {
+    content = (
+      <Wrapper id={contentId}>
+        <ChangesetList repository={group.repository} changesets={group.changesets} />
+      </Wrapper>
     );
   }
-}
 
-export default withTranslation("plugins")(ActivityGroupEntry);
+  return (
+    <div className="mb-4">
+      <NoStyleButton
+        onClick={toggleCollapse}
+        aria-expanded={!collapsed}
+        aria-controls={contentId}
+      >
+        <Headline>
+          <Icon>{icon}</Icon> {group.repository.namespace}/{group.repository.name} - {group.repository.type}{" "}
+          <small className="has-text-grey-light">
+            (
+            {t("scm-activity-plugin.changeset", {
+              count: group.changesets.length,
+            })}
+            )
+          </small>
+        </Headline>
+      </NoStyleButton>
+      {content}
+    </div>
+  );
+};
+
+export default ActivityGroupEntry;
