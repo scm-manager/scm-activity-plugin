@@ -1,75 +1,56 @@
 /*
- * MIT License
+ * Copyright (c) 2020 - present Cloudogu GmbH
  *
- * Copyright (c) 2020-present Cloudogu GmbH and Contributors
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the Free
+ * Software Foundation, version 3.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see https://www.gnu.org/licenses/.
  */
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { withTranslation, WithTranslation } from "react-i18next";
+
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Changeset, Repository } from "@scm-manager/ui-types";
-import { Loading, Notification, Page } from "@scm-manager/ui-components";
+import { Page } from "@scm-manager/ui-components";
+import { Loading, Notification, useDocumentTitle } from "@scm-manager/ui-core";
 import { findAll } from "./api";
 import { Activities, ActivityGroup } from "./ActivityGroup";
 import ActivityGroupEntry from "./ActivityGroupEntry";
 
-type Props = WithTranslation & {
-  activityUrl: string;
+type Props = {
+  activityUrl?: string;
 };
 
-type State = {
-  loading: boolean;
-  error?: string;
-  activities: Activities;
-};
+const Activity: React.FC<Props> = ({ activityUrl }) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | undefined>(undefined);
+  const [activities, setActivities] = useState<Activities | undefined>(undefined);
+  const [t] = useTranslation("plugins");
+  useDocumentTitle(t("scm-activity-plugin.root-page.title"));
 
-class Activity extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      loading: true
-    };
-  }
-
-  componentDidMount(): void {
-    const { activityUrl } = this.props;
+  useEffect(() => {
     if (activityUrl) {
       findAll(activityUrl)
-        .then(activities => {
-          this.setState({
-            loading: false,
-            activities
-          });
+        .then((activities) => {
+          setLoading(false);
+          setActivities(activities);
         })
-        .catch(error => {
-          this.setState({
-            loading: false,
-            error
-          });
+        .catch((error) => {
+          setLoading(false);
+          setError(error);
         });
     }
-  }
+  }, [activityUrl]);
 
-  groupByRepo(activities: Activities): ActivityGroup[] {
+  const groupByRepo = (activities: Activities): ActivityGroup[] => {
     const result: ActivityGroup[] = [];
-    const groups = [];
+    const groups: { [key: string]: ActivityGroup } = {};
     let lastGroupName = "";
     if (activities && activities.activities) {
       for (const activity of activities.activities) {
@@ -80,52 +61,47 @@ class Activity extends React.Component<Props, State> {
           const repository: Repository = {
             namespace: activity.repositoryNamespace,
             name: activity.repositoryName,
-            type: activity.repositoryType
-          };
+            type: activity.repositoryType,
+          } as Repository;
           const changesets: Changeset[] = [];
           group = {
             repository,
-            changesets
+            changesets,
           };
           groups[groupName] = group;
           result.push(group);
         }
-        group.changesets.push(activity._embedded.changeset);
+        if (activity._embedded) {
+          group.changesets.push(activity._embedded.changeset);
+        }
       }
     }
     return result;
-  }
+  };
 
-  getBody() {
-    const { t } = this.props;
-    const { activities } = this.state;
+  const getBody = () => {
     if (activities && activities.activities && activities.activities.length > 0) {
-      return this.groupByRepo(activities).map(group => {
-        return <ActivityGroupEntry group={group} />;
+      return groupByRepo(activities).map((group) => {
+        return <ActivityGroupEntry key={group.repository.namespace + "/" + group.repository.name} group={group} />;
       });
     } else {
       return <Notification>{t("scm-activity-plugin.notification.empty-list")}</Notification>;
     }
+  };
+
+  if (loading) {
+    return <Loading />;
   }
 
-  render() {
-    const { t } = this.props;
-    const { loading, error } = this.state;
+  return (
+    <Page
+      title={t("scm-activity-plugin.root-page.title")}
+      subtitle={t("scm-activity-plugin.root-page.subtitle")}
+      error={error}
+    >
+      {getBody()}
+    </Page>
+  );
+};
 
-    if (loading) {
-      return <Loading />;
-    }
-
-    return (
-      <Page
-        title={t("scm-activity-plugin.root-page.title")}
-        subtitle={t("scm-activity-plugin.root-page.subtitle")}
-        error={error}
-      >
-        {this.getBody()}
-      </Page>
-    );
-  }
-}
-
-export default withRouter(withTranslation("plugins")(Activity));
+export default Activity;
