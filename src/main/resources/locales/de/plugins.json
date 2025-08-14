@@ -8,7 +8,7 @@
       "empty-list": "Es sind keine Aktivitäten verfügbar!"
     },
     "changeset": "{{count}} Changeset",
-    "changeset_plural": "{{count}} Changesets",
+    "changeset_other": "{{count}} Changesets",
     "primaryNavigation": "Aktivitäten"
   }
 }
