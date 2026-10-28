@@ -23,8 +23,8 @@ const ActivityNavigation: React.FC = () => {
 
   return (
     <PrimaryNavigationLink
-      to="/activity"
-      match="/activity"
+      to="activity"
+      match="activity"
       label={t("scm-activity-plugin.primaryNavigation")}
       key="activity"
     />

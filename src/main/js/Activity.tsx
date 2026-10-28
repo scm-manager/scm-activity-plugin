@@ -22,17 +22,15 @@ import { Loading, Notification, useDocumentTitle } from "@scm-manager/ui-core";
 import { findAll } from "./api";
 import { Activities, ActivityGroup } from "./ActivityGroup";
 import ActivityGroupEntry from "./ActivityGroupEntry";
+import { useRequiredIndexLink } from "@scm-manager/ui-api";
 
-type Props = {
-  activityUrl?: string;
-};
-
-const Activity: React.FC<Props> = ({ activityUrl }) => {
+const Activity: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const [activities, setActivities] = useState<Activities | undefined>(undefined);
   const [t] = useTranslation("plugins");
   useDocumentTitle(t("scm-activity-plugin.root-page.title"));
+  const activityUrl = useRequiredIndexLink("activity");
 
   useEffect(() => {
     if (activityUrl) {

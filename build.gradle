@@ -23,7 +23,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "3.7.0"
+  scmVersion = "4.0.0-SNAPSHOT"
   displayName = "Activity"
   description = "Shows the latest activity from your repositories"
   author = "Cloudogu GmbH"

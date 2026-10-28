@@ -16,33 +16,26 @@
 
 import React from "react";
 import { binder, extensionPoints } from "@scm-manager/ui-extensions";
-import { Link, Links } from "@scm-manager/ui-types";
-import { ProtectedRoute } from "@scm-manager/ui-components";
 import Activity from "./Activity";
 import ActivityNavigation from "./ActivityNavigation";
+import { useIndexLink } from "@scm-manager/ui-api";
 
-const predicate = (props: Props) => {
-  return props?.links && props.links.activity;
+
+const predicate = () => {
+  return useIndexLink("activity");
 };
 
-type Props = {
-  authenticated?: boolean;
-  links: Links;
-};
-
-const ActivityRoute: React.FC<Props> = ({ authenticated, links }) => {
-  const activityUrl = (links?.activity as Link)?.href;
-  return (
-    <ProtectedRoute
-      path="/activity"
-      component={() => <Activity activityUrl={activityUrl ?? undefined} />}
-      authenticated={!!(authenticated && !!activityUrl)}
-    />
-  );
-};
-
-binder.bind<extensionPoints.MainRoute>("main.route", ActivityRoute, predicate);
-binder.bind<extensionPoints.PrimaryNavigationFirstMenu>("primary-navigation.first-menu", ActivityNavigation, predicate);
+binder.bind<extensionPoints.MainRoute>(
+  "main.route",
+  () => ({
+    path: "activity",
+    element: <Activity />,
+  }),
+  predicate
+);
+binder.bind<extensionPoints.PrimaryNavigationFirstMenu>(
+  "primary-navigation.first-menu",
+  () => <ActivityNavigation />,
+  predicate
+);
 binder.bind<extensionPoints.MainRedirect>("main.redirect", () => "/activity", predicate);
-
-export default ActivityRoute;
